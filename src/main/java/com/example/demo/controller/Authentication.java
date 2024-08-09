@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.entity.Account;
+import com.example.demo.entity.User;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
-import com.example.demo.repository.AuthenticationRepository;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.EmailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,8 +30,8 @@ public class Authentication {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        Account account = authenticationService.register(registerRequest);
-        return ResponseEntity.ok(account);
+        User user = authenticationService.register(registerRequest);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/verify")
@@ -54,7 +53,7 @@ public class Authentication {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
         AccountResponse account = authenticationService.login(loginRequest);
         return ResponseEntity.ok(account);
     }
@@ -88,5 +87,9 @@ public class Authentication {
             return new ResponseEntity<>(headers, HttpStatus.FOUND);
         }
         return null;
+    }
+    @GetMapping("/account/{id}")
+    public ResponseEntity<User> getAccountById(@PathVariable Long id) {
+        return ResponseEntity.ok(authenticationService.findById(id));
     }
 }

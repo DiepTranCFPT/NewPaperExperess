@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 
 
 @Entity
 @Data
-public class Account {
+public class User {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,19 @@ public class Account {
 
    @Column(unique = true)
    String email;
+
+   @ManyToOne
+   @JoinColumn(name = "company_id")
+   private Company company;
+
+   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+   private List<Article> articles;
+
+   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+   private List<Rating> ratings;
+
+   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+   private List<Comment> comments;
 
    private boolean enable;
 

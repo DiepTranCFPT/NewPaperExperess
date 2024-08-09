@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 
-import com.example.demo.entity.Account;
+import com.example.demo.entity.User;
 import com.example.demo.exception.AuthException;
 
 import com.nimbusds.jose.*;
@@ -43,7 +43,7 @@ public class TokenService {
 //        return AuthenticationResponse.builder().token(token).authenticated(true).build();
 //    }
 
-    String generateToken(Account user) {
+    String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

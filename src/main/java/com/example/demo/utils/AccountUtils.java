@@ -1,6 +1,6 @@
 package com.example.demo.utils;
 
-import com.example.demo.entity.Account;
+import com.example.demo.entity.User;
 import com.example.demo.repository.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,9 +11,9 @@ public class AccountUtils {
     @Autowired
     AuthenticationRepository userRepository;
 
-    public Account getCurrentUser(){
+    public User getCurrentUser(){
         String email=  SecurityContextHolder.getContext().getAuthentication().getName();
-        Account user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
         return user;
         }
 }

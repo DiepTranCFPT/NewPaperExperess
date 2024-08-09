@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Account;
+import com.example.demo.entity.User;
 
 import com.example.demo.exception.AuthException;
 import com.example.demo.exception.BadRequestException;
@@ -15,15 +15,12 @@ import com.example.demo.utils.AccountUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -47,20 +44,20 @@ public class AuthenticationService {
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
 
     @Transactional
-    public Account register(RegisterRequest registerRequest) {
-        Account account = new Account();
-        account.setName(registerRequest.getName());
-        account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        account.setPhone(registerRequest.getPhone());
-        account.setEmail(registerRequest.getEmail());
+    public User register(RegisterRequest registerRequest) {
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setPhone(registerRequest.getPhone());
+        user.setEmail(registerRequest.getEmail());
 
-        account.setEnable(false);
-        account.setVerificationCode(UUID.randomUUID().toString());
+        user.setEnable(false);
+        user.setVerificationCode(UUID.randomUUID().toString());
 
-        authenticationRepository.save(account);
+        authenticationRepository.save(user);
 
         try {
-            account = authenticationRepository.save(account);
+            user = authenticationRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new AuthException("Duplicate");
         }
@@ -73,17 +70,17 @@ public class AuthenticationService {
 //        emailDetail.setLink(verifyURL);
 //        emailDetail.setButtonValue("Verify Email");
 //        emailService.sendMailTemplate(emailDetail);
-        return account;
+        return user;
     }
 
     public boolean verify(String verificationCode) {
-        Account account = authenticationRepository.findByVerificationCode(verificationCode);
-        if (account == null || account.isEnable()) {
+        User user = authenticationRepository.findByVerificationCode(verificationCode);
+        if (user == null || user.isEnable()) {
             return false;
         } else {
-            account.setEnable(true);
+            user.setEnable(true);
 //            account.setStatus(AccoutStatus.ACTIVE);
-            authenticationRepository.save(account);
+            authenticationRepository.save(user);
             return true;
         }
     }
@@ -125,24 +122,24 @@ public class AuthenticationService {
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
-            Account account = authenticationRepository.findByEmail(email);
+            User user = authenticationRepository.findByEmail(email);
 
-            if (account == null) {
-                account = new Account();
-                account.setName(firebaseToken.getName());
-                account.setEmail(firebaseToken.getEmail());
+            if (user == null) {
+                user = new User();
+                user.setName(firebaseToken.getName());
+                user.setEmail(firebaseToken.getEmail());
 
 
-                account = authenticationRepository.save(account);
+                user = authenticationRepository.save(user);
 
             }
 
 
-            accountResponse.setId(account.getId());
-            accountResponse.setName(account.getName());
-            accountResponse.setEmail(account.getEmail());
+            accountResponse.setId(user.getId());
+            accountResponse.setName(user.getName());
+            accountResponse.setEmail(user.getEmail());
 
-            String token = tokenService.generateToken(account);
+            String token = tokenService.generateToken(user);
             accountResponse.setToken(token);
 
         } catch (FirebaseAuthException e) {
@@ -159,8 +156,8 @@ public class AuthenticationService {
 
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        Account account = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-        if (account == null) {
+        User user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
+        if (user == null) {
             throw new BadRequestException("Account not found");
         }
 
@@ -169,8 +166,8 @@ public class AuthenticationService {
         emailDetail.setSubject("Reset Password for account " + forgotPasswordRequest.getEmail() + "!!!");
         emailDetail.setMsgBody(""); // You might want to add a meaningful message here
         emailDetail.setButtonValue("Reset Password");
-        emailDetail.setLink("http://booking88.online/reset-password?token=" + tokenService.generateToken(account));
-        emailDetail.setName(account.getName());
+        emailDetail.setLink("http://booking88.online/reset-password?token=" + tokenService.generateToken(user));
+        emailDetail.setName(user.getName());
 
         Runnable r = new Runnable() {
             @Override
@@ -184,7 +181,7 @@ public class AuthenticationService {
 
 
     public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Account user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
+        User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
 
         if (user == null) {
             throw new GlobalException("Not found email");
@@ -207,11 +204,11 @@ public class AuthenticationService {
 //    }
 
 
-    public Account findById(Long id) {
-        Account account = authenticationRepository.findById(id).orElse(null);
-        if (account == null) {
+    public User findById(Long id) {
+        User user = authenticationRepository.findById(id).orElse(null);
+        if (user == null) {
             throw new RuntimeException("Account not found with id: " + id);
         }
-        return account;
+        return user;
     }
 }
