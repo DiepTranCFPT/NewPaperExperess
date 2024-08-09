@@ -25,8 +25,6 @@ public class Account {
    @Column(unique = true)
    String email;
 
-
-
    private boolean enable;
 
    private String verificationCode;

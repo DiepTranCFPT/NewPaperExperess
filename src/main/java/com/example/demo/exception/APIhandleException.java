@@ -14,7 +14,6 @@ public class APIhandleException {
         return new ResponseEntity<>("User or paswork not true", HttpStatus.FORBIDDEN);
     }
 
-
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Object> handleDuplicatePhone(AuthException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
