@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 
@@ -12,35 +16,41 @@ import java.util.List;
 @Data
 public class User {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   long id;
-   String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private long id;
 
-   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-   String password;
+    private String name;
 
-   @Column(unique = true)
-   String phone;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 10, message = "Password")
+    private String password;
 
-   @Column(unique = true)
-   String email;
+    @Column(unique = true)
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number format")
+    @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 digits")
+    private String phone;
 
-   @ManyToOne
-   @JoinColumn(name = "company_id")
-   private Company company;
+    @Column(unique = true)
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
+    String email;
 
-   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-   private List<Article> articles;
+    @ManyToOne
+    private Company company;
 
-   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-   private List<Rating> ratings;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Article> articles;
 
-   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-   private List<Comment> comments;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Rating> ratings;
 
-   private boolean enable;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
-   private String verificationCode;
+    private boolean isEnable;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min = 6, message = "Verification code")
+    private String verificationCode;
 }

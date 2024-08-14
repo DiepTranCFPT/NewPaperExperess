@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
     private String status;
