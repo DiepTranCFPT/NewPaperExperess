@@ -204,7 +204,7 @@ public class AuthenticationService {
 //    }
 
 
-    public User findById(Long id) {
+    public User findById(UUID id) {
         User user = authenticationRepository.findById(id).orElse(null);
         if (user == null) {
             throw new RuntimeException("Account not found with id: " + id);

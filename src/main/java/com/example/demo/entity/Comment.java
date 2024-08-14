@@ -1,21 +1,23 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.UUID;
 
 @Entity
+@Data
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID id;
 
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "article_id")
     private Article article;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
     // getters and setters

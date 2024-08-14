@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -18,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private long id;
+    private UUID id;
 
     private String name;
 

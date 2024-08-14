@@ -4,9 +4,10 @@ import com.example.demo.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.UUID;
 
 
-public interface AuthenticationRepository extends JpaRepository<User, Long>
+public interface AuthenticationRepository extends JpaRepository<User, UUID>
 {   // dua ra daatabase
     User findByEmail(String email);
 
