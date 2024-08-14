@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Media {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
     private String url;
