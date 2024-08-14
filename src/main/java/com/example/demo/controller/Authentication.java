@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @SecurityRequirement(name = "api")
@@ -23,10 +24,15 @@ import java.net.URI;
 
 public class Authentication {
 
+    private final AuthenticationService authenticationService;
+    private final EmailService emailService;
+
     @Autowired
-    AuthenticationService authenticationService;
-    @Autowired
-    EmailService emailService;
+    public Authentication(AuthenticationService authenticationService,
+                          EmailService emailService){
+        this.authenticationService = authenticationService;
+        this.emailService = emailService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
@@ -38,13 +44,11 @@ public class Authentication {
     public ResponseEntity<Void> verifyUser(@RequestParam("code") String code) {
         boolean verified = authenticationService.verify(code);
         if (verified) {
-            // URL thành công
             String successUrl = "http://booking88.online/verify_success";
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(URI.create(successUrl));
             return new ResponseEntity<>(headers, HttpStatus.FOUND);
         } else {
-            // URL thất bại
             String failureUrl = "http://booking88.online/verify_failed";
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(URI.create(failureUrl));
@@ -89,7 +93,7 @@ public class Authentication {
         return null;
     }
     @GetMapping("/account/{id}")
-    public ResponseEntity<User> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<User> getAccountById(@PathVariable UUID id) {
         return ResponseEntity.ok(authenticationService.findById(id));
     }
 }

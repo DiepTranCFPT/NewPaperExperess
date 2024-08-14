@@ -17,14 +17,18 @@ import org.thymeleaf.context.Context;
 @Service
 public class EmailService {
 
-    @Autowired
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
+    private final JavaMailSender javaMailSender;
+    private final AuthenticationRepository authenticationRepository;
 
     @Autowired
-    private JavaMailSender javaMailSender;
-
-    @Autowired
-    AuthenticationRepository authenticationRepository;
+    public EmailService(TemplateEngine templateEngine,
+                        JavaMailSender javaMailSender,
+                        AuthenticationRepository authenticationRepository) {
+        this.templateEngine = templateEngine;
+        this.javaMailSender = javaMailSender;
+        this.authenticationRepository = authenticationRepository;
+    }
 
     public void sendMailTemplate(EmailDetail emailDetail) {
         try {
@@ -125,6 +129,7 @@ public class EmailService {
             System.err.println("Error: " + e.getMessage());
         }
     }
+
 //    public void sendBookingConfirmationEmail(Booking booking) throws MessagingException {
 //        MimeMessage message = javaMailSender.createMimeMessage();
 //        MimeMessageHelper helper = new MimeMessageHelper(message, true);
