@@ -21,7 +21,6 @@ import java.util.UUID;
 @SecurityRequirement(name = "api")
 @CrossOrigin("*")
 @RequestMapping("api")
-
 public class Authentication {
 
     private final AuthenticationService authenticationService;
@@ -34,8 +33,8 @@ public class Authentication {
         this.emailService = emailService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+    @PostMapping
+    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
         User user = authenticationService.register(registerRequest);
         return ResponseEntity.ok(user);
     }
@@ -95,5 +94,11 @@ public class Authentication {
     @GetMapping("/account/{id}")
     public ResponseEntity<User> getAccountById(@PathVariable String id) {
         return ResponseEntity.ok(authenticationService.findById(id));
+    }
+
+
+    @PostMapping("/account")
+    public ResponseEntity<String> getAccountByPhone(@RequestParam String test) {
+        return ResponseEntity.ok(test);
     }
 }

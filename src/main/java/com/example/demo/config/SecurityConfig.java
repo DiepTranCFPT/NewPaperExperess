@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 
+import com.example.demo.entity.User;
 import com.example.demo.exception.AuthenticationHandler;
 import com.example.demo.filter.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 import javax.crypto.spec.SecretKeySpec;
 
 
@@ -33,8 +35,9 @@ public class SecurityConfig  {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-resources/**",
+            "/api/**",
             "/api/register/**",
-            "/api/register",
+            "/api/account",
             "/api/login",
             "/api/forgot-password",
             "/api/create",
@@ -61,7 +64,7 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers(new CustomRequestMatcher(PUBLIC_ENDPOINTS_METHOD)).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -72,7 +75,7 @@ public class SecurityConfig  {
                         .authenticationEntryPoint(authenticationHandler))
                 .csrf(AbstractHttpConfigurer::disable);
 
-        httpSecurity.addFilterBefore(new Filter(PUBLIC_ENDPOINTS, PUBLIC_ENDPOINTS_METHOD), UsernamePasswordAuthenticationFilter.class);
+//        httpSecurity.addFilterBefore(new Filter(PUBLIC_ENDPOINTS, PUBLIC_ENDPOINTS_METHOD), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -102,5 +105,4 @@ public class SecurityConfig  {
 
 
 }
-
 

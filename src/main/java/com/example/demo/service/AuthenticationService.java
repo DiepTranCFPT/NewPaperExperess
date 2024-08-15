@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -57,7 +56,7 @@ public class AuthenticationService {
         user.setDataActivate(OtherFunctions.DateSystem());
 
         try {
-            user.setAvata(OtherFunctions.UploadImg("../../../avatadf.jpg"));
+            user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

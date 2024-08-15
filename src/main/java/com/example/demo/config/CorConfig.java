@@ -6,9 +6,10 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class CorConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedHeaders("*")
@@ -16,8 +17,6 @@ public class CorConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
                 .allowedMethods("*")
                 .maxAge(1440000);
     }
-
-
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
