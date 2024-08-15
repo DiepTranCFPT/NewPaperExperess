@@ -1,12 +1,10 @@
 package com.example.demo.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Random;
 
 public class OtherFunctions {
     public static byte[] UploadImg(String fileName) throws Exception {
@@ -15,7 +13,13 @@ public class OtherFunctions {
         }
     }
 
-    public static String DateSystem(){
+    public static String DateSystem() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
+
+    public static String generateRandomNumberString() {
+        return String.format("%06d", new Random().nextInt(100000));
+    }
+
+
 }

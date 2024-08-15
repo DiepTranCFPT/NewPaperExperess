@@ -97,8 +97,14 @@ public class Authentication {
     }
 
 
-    @PostMapping("/account")
-    public ResponseEntity<String> getAccountByPhone(@RequestParam String test) {
-        return ResponseEntity.ok(test);
+    @PostMapping("/verify/{code}")
+    public ResponseEntity<Boolean> verifyAccount(@PathVariable String code) {
+        return ResponseEntity.ok(authenticationService.verify(code));
     }
+
+
+//    @PostMapping("/account")
+//    public ResponseEntity<String> getAccountByPhone(@RequestParam String test) {
+//        return ResponseEntity.ok(test);
+//    }
 }

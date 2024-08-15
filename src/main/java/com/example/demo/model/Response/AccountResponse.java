@@ -5,6 +5,8 @@ import com.example.demo.infor.Role;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Base64;
+
 @Getter
 @Setter
 public class AccountResponse {
@@ -12,7 +14,7 @@ public class AccountResponse {
     private String id;
     private String name;
     private String email;
-    private byte[] avatar;
+    private String avatar;
     private Role role;
     private String DataActivate;
     private String phone;
@@ -22,7 +24,7 @@ public class AccountResponse {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
-        this.avatar = user.getAvata();
+        this.avatar = Base64.getEncoder().encodeToString(user.getAvata());
         this.role = user.getRole();
         this.DataActivate = user.getDataActivate();
         this.phone = user.getPhone();

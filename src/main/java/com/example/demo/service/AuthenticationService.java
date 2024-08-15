@@ -31,13 +31,15 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
+    private String VerifyCode;
+
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
                                  TokenService tokenService,
                                  PasswordEncoder passwordEncoder,
                                  EmailService emailService) {
         this.authenticationRepository = authenticationRepository;
-        this.tokenService=tokenService;
+        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
@@ -50,9 +52,8 @@ public class AuthenticationService {
         User user = new User();
         user.setName(registerRequest.getName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setPhone(registerRequest.getPhone());
         user.setEmail(registerRequest.getEmail());
-        user.setEnable(false);
+        user.setEnable(true);
         user.setDataActivate(OtherFunctions.DateSystem());
 
         try {
@@ -60,16 +61,14 @@ public class AuthenticationService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         authenticationRepository.save(user);
-
         try {
             user = authenticationRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new AuthException("Duplicate");
         }
 
-
+        VerifyCode = OtherFunctions.generateRandomNumberString();
 
 //        EmailDetail emailDetail = new EmailDetail();
 //        emailDetail.setRecipient(registerRequest.getEmail());
@@ -82,17 +81,9 @@ public class AuthenticationService {
         return user;
     }
 
-//    public boolean verify(String verificationCode) {
-//        User user = authenticationRepository.findByVerificationCode(verificationCode);
-//        if (user == null || user.isEnable()) {
-//            return false;
-//        } else {
-//            user.setEnable(true);
-////            account.setStatus(AccoutStatus.ACTIVE);
-//            authenticationRepository.save(user);
-//            return true;
-//        }
-//    }
+    public boolean verify(String verificationCode) {
+        return verificationCode.equals(VerifyCode);
+    }
 
     public AccountResponse login(LoginRequest loginRequest) {
         var account = authenticationRepository.findByEmail(loginRequest.getEmail());
@@ -101,15 +92,6 @@ public class AuthenticationService {
         }
         if (!passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
             throw new AuthException("Wrong Id Or Password");
-        }
-
-//        if (account.getStatus().equals(AccoutStatus.DELETED)) {
-//            throw new AuthException("Account deleted");
-//        }
-
-        // Check if the account is verified
-        if (!account.isEnable()) {
-            throw new AuthException("Account not verified. Please check your email to verify your account.");
         }
 
         String token = tokenService.generateToken(account);
@@ -144,10 +126,6 @@ public class AuthenticationService {
 
         return accountResponse;
     }
-
-
-
-
 
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
@@ -185,7 +163,7 @@ public class AuthenticationService {
         // Check if the token matches
         if (!token.equals(resetPasswordRequest.getToken())) {
             throw new GlobalException("Invalid token");
-        }else {
+        } else {
             user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
             authenticationRepository.save(user);
             return 1;

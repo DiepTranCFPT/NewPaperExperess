@@ -38,7 +38,7 @@ public class SecurityConfig  {
             "/api/**",
             "/api/register/**",
             "/api/account",
-            "/api/login",
+            "/api/login/**",
             "/api/forgot-password",
             "/api/create",
             "/api/admin/register",
