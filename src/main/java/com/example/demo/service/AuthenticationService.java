@@ -50,7 +50,6 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setPhone(registerRequest.getPhone());
         user.setEmail(registerRequest.getEmail());
-
         user.setEnable(false);
         user.setVerificationCode(UUID.randomUUID().toString());
 

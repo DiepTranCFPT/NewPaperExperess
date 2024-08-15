@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String title;
     private String content;

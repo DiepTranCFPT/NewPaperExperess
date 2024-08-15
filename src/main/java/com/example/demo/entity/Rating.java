@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String status;
     private String createdDate;
