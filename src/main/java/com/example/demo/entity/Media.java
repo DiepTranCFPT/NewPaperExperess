@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String url;
     private String type;

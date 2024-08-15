@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String typeName;
 

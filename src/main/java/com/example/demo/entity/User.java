@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.infor.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String name;
 
@@ -35,7 +36,7 @@ public class User {
     @Column(unique = true)
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
-    String email;
+    private String email;
 
     @ManyToOne
     private Company company;
@@ -54,4 +55,11 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 6, message = "Verification code")
     private String verificationCode;
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] avata;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
