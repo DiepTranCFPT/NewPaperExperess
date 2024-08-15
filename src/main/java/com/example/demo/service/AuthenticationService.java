@@ -10,8 +10,8 @@ import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
-import com.example.demo.utils.AccountUtils;
 
+import com.example.demo.utils.OtherFunctions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -27,18 +27,21 @@ import java.util.logging.Logger;
 @Service
 public class AuthenticationService {
 
-    @Autowired
-    private AuthenticationRepository authenticationRepository;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private EmailService emailService;
-
+    private final AuthenticationRepository authenticationRepository;
+    private final TokenService tokenService;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    AccountUtils accountUtils;
+    public AuthenticationService(AuthenticationRepository authenticationRepository,
+                                 TokenService tokenService,
+                                 PasswordEncoder passwordEncoder,
+                                 EmailService emailService) {
+        this.authenticationRepository = authenticationRepository;
+        this.tokenService=tokenService;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+    }
 
 
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
@@ -51,7 +54,13 @@ public class AuthenticationService {
         user.setPhone(registerRequest.getPhone());
         user.setEmail(registerRequest.getEmail());
         user.setEnable(false);
-        user.setVerificationCode(UUID.randomUUID().toString());
+        user.setDataActivate(OtherFunctions.DateSystem());
+
+        try {
+            user.setAvata(OtherFunctions.UploadImg("../../../avatadf.jpg"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         authenticationRepository.save(user);
 
@@ -60,6 +69,8 @@ public class AuthenticationService {
         } catch (DataIntegrityViolationException e) {
             throw new AuthException("Duplicate");
         }
+
+
 
 //        EmailDetail emailDetail = new EmailDetail();
 //        emailDetail.setRecipient(registerRequest.getEmail());
@@ -72,17 +83,17 @@ public class AuthenticationService {
         return user;
     }
 
-    public boolean verify(String verificationCode) {
-        User user = authenticationRepository.findByVerificationCode(verificationCode);
-        if (user == null || user.isEnable()) {
-            return false;
-        } else {
-            user.setEnable(true);
-//            account.setStatus(AccoutStatus.ACTIVE);
-            authenticationRepository.save(user);
-            return true;
-        }
-    }
+//    public boolean verify(String verificationCode) {
+//        User user = authenticationRepository.findByVerificationCode(verificationCode);
+//        if (user == null || user.isEnable()) {
+//            return false;
+//        } else {
+//            user.setEnable(true);
+////            account.setStatus(AccoutStatus.ACTIVE);
+//            authenticationRepository.save(user);
+//            return true;
+//        }
+//    }
 
     public AccountResponse login(LoginRequest loginRequest) {
         var account = authenticationRepository.findByEmail(loginRequest.getEmail());
@@ -103,21 +114,14 @@ public class AuthenticationService {
         }
 
         String token = tokenService.generateToken(account);
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(account.getId());
-        accountResponse.setEmail(account.getEmail());
+        AccountResponse accountResponse = new AccountResponse(account);
         accountResponse.setToken(token);
-
-        accountResponse.setName(account.getName());
-        accountResponse.setPhone(account.getPhone());
-
-
         return accountResponse;
     }
 
 
     public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
-        AccountResponse accountResponse = new AccountResponse();
+        AccountResponse accountResponse;
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
@@ -127,17 +131,10 @@ public class AuthenticationService {
                 user = new User();
                 user.setName(firebaseToken.getName());
                 user.setEmail(firebaseToken.getEmail());
-
-
                 user = authenticationRepository.save(user);
 
             }
-
-
-            accountResponse.setId(user.getId());
-            accountResponse.setName(user.getName());
-            accountResponse.setEmail(user.getEmail());
-
+            accountResponse = new AccountResponse(user);
             String token = tokenService.generateToken(user);
             accountResponse.setToken(token);
 
@@ -203,7 +200,7 @@ public class AuthenticationService {
 //    }
 
 
-    public User findById(UUID id) {
+    public User findById(String id) {
         User user = authenticationRepository.findById(id).orElse(null);
         if (user == null) {
             throw new RuntimeException("Account not found with id: " + id);

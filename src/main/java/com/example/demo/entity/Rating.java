@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
-import java.util.UUID;
 
 @Entity
+@Data
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -17,12 +18,9 @@ public class Rating {
     private String comments;
 
     @ManyToOne
-    @JoinColumn(name = "article_id")
     private Article article;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
-
 }
 

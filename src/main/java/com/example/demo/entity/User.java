@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.UUID;
 
 
 @Entity
@@ -52,9 +51,9 @@ public class User {
 
     private boolean isEnable;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 6, message = "Verification code")
-    private String verificationCode;
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @Size(min = 6, message = "Verification code")
+//    private String verificationCode;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
@@ -62,4 +61,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String DataActivate;
 }

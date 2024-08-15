@@ -40,24 +40,24 @@ public class Authentication {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<Void> verifyUser(@RequestParam("code") String code) {
-        boolean verified = authenticationService.verify(code);
-        if (verified) {
-            String successUrl = "http://booking88.online/verify_success";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create(successUrl));
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-        } else {
-            String failureUrl = "http://booking88.online/verify_failed";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create(failureUrl));
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-        }
-    }
+//    @GetMapping("/verify")
+//    public ResponseEntity<Void> verifyUser(@RequestParam("code") String code) {
+//        boolean verified = authenticationService.verify(code);
+//        if (verified) {
+//            String successUrl = "http://booking88.online/verify_success";
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setLocation(URI.create(successUrl));
+//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+//        } else {
+//            String failureUrl = "http://booking88.online/verify_failed";
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setLocation(URI.create(failureUrl));
+//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+//        }
+//    }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AccountResponse> login(@RequestBody LoginRequest loginRequest) {
         AccountResponse account = authenticationService.login(loginRequest);
         return ResponseEntity.ok(account);
     }
@@ -93,7 +93,7 @@ public class Authentication {
         return null;
     }
     @GetMapping("/account/{id}")
-    public ResponseEntity<User> getAccountById(@PathVariable UUID id) {
+    public ResponseEntity<User> getAccountById(@PathVariable String id) {
         return ResponseEntity.ok(authenticationService.findById(id));
     }
 }

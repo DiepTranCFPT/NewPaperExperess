@@ -7,11 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface AuthenticationRepository extends JpaRepository<User, UUID>
+public interface AuthenticationRepository extends JpaRepository<User, String>
 {   // dua ra daatabase
     User findByEmail(String email);
-
-
-    User findByVerificationCode(String code);
-
+//    User findByVerificationCode(String code);
 }

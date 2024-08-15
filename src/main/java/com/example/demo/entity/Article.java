@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -21,11 +20,9 @@ public class Article {
     private String titlePhoto;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
     private User author;
 
     @OneToOne
-    @JoinColumn(name = "type_id")
     private Type type;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
@@ -36,7 +33,6 @@ public class Article {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Rating> ratings;
-
 
 }
 
