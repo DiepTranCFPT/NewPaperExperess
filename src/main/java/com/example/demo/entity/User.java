@@ -24,7 +24,7 @@ public class User {
     private String name;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 10, message = "Password")
+    @Size(min = 5, message = "Password")
     private String password;
 
     @Column(unique = true)
