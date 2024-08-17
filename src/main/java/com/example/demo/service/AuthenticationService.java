@@ -51,12 +51,18 @@ public class AuthenticationService implements IAuthenticationService {
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
-        User user = new User();
-        user.setName(registerRequest.getName());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setEmail(registerRequest.getEmail());
-        user.setEnable(true);
-        user.setDataActivate(OtherFunctions.DateSystem());
+        User user = User.builder()
+                .name(registerRequest.getName())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .email(registerRequest.getEmail())
+                .isEnable(true)
+                .DataActivate(OtherFunctions.DateSystem())
+                .build();
+//        user.setName(registerRequest.getName());
+//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+//        user.setEmail(registerRequest.getEmail());
+//        user.setEnable(true);
+//        user.setDataActivate(OtherFunctions.DateSystem());
 
         try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
