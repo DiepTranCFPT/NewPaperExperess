@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
@@ -8,6 +9,7 @@ import org.springframework.core.io.FileSystemResource;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class EmailDetail {
     String recipient;
     private String msgBody;
