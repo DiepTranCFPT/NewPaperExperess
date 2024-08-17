@@ -19,7 +19,5 @@ public class Type {
 
     @OneToOne(mappedBy = "type")
     private Article article;
-
-    // getters and setters
 }
 

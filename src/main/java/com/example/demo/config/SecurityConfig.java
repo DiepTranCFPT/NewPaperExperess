@@ -1,7 +1,6 @@
 package com.example.demo.config;
 
 
-import com.example.demo.entity.User;
 import com.example.demo.exception.AuthenticationHandler;
 import com.example.demo.filter.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 import javax.crypto.spec.SecretKeySpec;
@@ -56,8 +54,13 @@ public class SecurityConfig  {
             "/vnpay-payment-return"
     };
 
+
+    private final AuthenticationHandler authenticationHandler;
     @Autowired
-    AuthenticationHandler authenticationHandler;
+    public SecurityConfig(AuthenticationHandler authenticationHandler) {
+        this.authenticationHandler = authenticationHandler;
+    }
+
 
 
     @Bean

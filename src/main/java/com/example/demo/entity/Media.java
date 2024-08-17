@@ -20,7 +20,5 @@ public class Media {
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
-
-    // getters and setters
 }
 

@@ -51,10 +51,6 @@ public class User {
 
     private boolean isEnable;
 
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @Size(min = 6, message = "Verification code")
-//    private String verificationCode;
-
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;

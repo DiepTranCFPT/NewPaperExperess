@@ -30,7 +30,6 @@ public class AuthenticationService {
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
     private String VerifyCode;
 
     @Autowired
@@ -178,10 +177,7 @@ public class AuthenticationService {
 
 
     public User findById(String id) {
-        User user = authenticationRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("Account not found with id: " + id);
-        }
-        return user;
+        return authenticationRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Account not found with id: " + id));
     }
 }
