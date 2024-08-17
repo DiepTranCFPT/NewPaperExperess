@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.UUID;
 
 
 @Entity
@@ -25,7 +24,7 @@ public class User {
     private String name;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 10, message = "Password")
+    @Size(min = 5, message = "Password")
     private String password;
 
     @Column(unique = true)
@@ -52,14 +51,12 @@ public class User {
 
     private boolean isEnable;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 6, message = "Verification code")
-    private String verificationCode;
-
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] avata;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String DataActivate;
 }

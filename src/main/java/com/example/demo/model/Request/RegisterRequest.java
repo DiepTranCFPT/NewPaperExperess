@@ -8,12 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisterRequest {
-//    long locationId;
     String name;
     String password;
-    String phone;
-
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
     String email;
+
 }

@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
-import java.util.UUID;
 
 @Entity
+@Data
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -18,7 +19,5 @@ public class Type {
 
     @OneToOne(mappedBy = "type")
     private Article article;
-
-    // getters and setters
 }
 

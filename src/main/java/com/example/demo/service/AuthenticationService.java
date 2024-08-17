@@ -6,12 +6,13 @@ import com.example.demo.exception.AuthException;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.GlobalException;
 
+import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
-import com.example.demo.utils.AccountUtils;
 
+import com.example.demo.utils.OtherFunctions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -21,45 +22,55 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
+
+    private final AuthenticationRepository authenticationRepository;
+    private final TokenService tokenService;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private String VerifyCode;
 
     @Autowired
-    private AuthenticationRepository authenticationRepository;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private EmailService emailService;
-
-
-    @Autowired
-    AccountUtils accountUtils;
+    public AuthenticationService(AuthenticationRepository authenticationRepository,
+                                 TokenService tokenService,
+                                 PasswordEncoder passwordEncoder,
+                                 EmailService emailService) {
+        this.authenticationRepository = authenticationRepository;
+        this.tokenService = tokenService;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+    }
 
 
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
 
+
     @Transactional
+    @Override
     public User register(RegisterRequest registerRequest) {
         User user = new User();
         user.setName(registerRequest.getName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setPhone(registerRequest.getPhone());
         user.setEmail(registerRequest.getEmail());
-        user.setEnable(false);
-        user.setVerificationCode(UUID.randomUUID().toString());
+        user.setEnable(true);
+        user.setDataActivate(OtherFunctions.DateSystem());
 
+        try {
+            user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         authenticationRepository.save(user);
-
         try {
             user = authenticationRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new AuthException("Duplicate");
         }
+
+        VerifyCode = OtherFunctions.generateRandomNumberString();
 
 //        EmailDetail emailDetail = new EmailDetail();
 //        emailDetail.setRecipient(registerRequest.getEmail());
@@ -72,18 +83,13 @@ public class AuthenticationService {
         return user;
     }
 
+    @Override
     public boolean verify(String verificationCode) {
-        User user = authenticationRepository.findByVerificationCode(verificationCode);
-        if (user == null || user.isEnable()) {
-            return false;
-        } else {
-            user.setEnable(true);
-//            account.setStatus(AccoutStatus.ACTIVE);
-            authenticationRepository.save(user);
-            return true;
-        }
+        return verificationCode.equals(VerifyCode);
     }
 
+
+    @Override
     public AccountResponse login(LoginRequest loginRequest) {
         var account = authenticationRepository.findByEmail(loginRequest.getEmail());
         if (account == null) {
@@ -93,31 +99,15 @@ public class AuthenticationService {
             throw new AuthException("Wrong Id Or Password");
         }
 
-//        if (account.getStatus().equals(AccoutStatus.DELETED)) {
-//            throw new AuthException("Account deleted");
-//        }
-
-        // Check if the account is verified
-        if (!account.isEnable()) {
-            throw new AuthException("Account not verified. Please check your email to verify your account.");
-        }
-
         String token = tokenService.generateToken(account);
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(account.getId());
-        accountResponse.setEmail(account.getEmail());
+        AccountResponse accountResponse = new AccountResponse(account);
         accountResponse.setToken(token);
-
-        accountResponse.setName(account.getName());
-        accountResponse.setPhone(account.getPhone());
-
-
         return accountResponse;
     }
 
-
+    @Override
     public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
-        AccountResponse accountResponse = new AccountResponse();
+        AccountResponse accountResponse;
         try {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
@@ -127,17 +117,10 @@ public class AuthenticationService {
                 user = new User();
                 user.setName(firebaseToken.getName());
                 user.setEmail(firebaseToken.getEmail());
-
-
                 user = authenticationRepository.save(user);
 
             }
-
-
-            accountResponse.setId(user.getId());
-            accountResponse.setName(user.getName());
-            accountResponse.setEmail(user.getEmail());
-
+            accountResponse = new AccountResponse(user);
             String token = tokenService.generateToken(user);
             accountResponse.setToken(token);
 
@@ -149,11 +132,7 @@ public class AuthenticationService {
         return accountResponse;
     }
 
-
-
-
-
-
+    @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         User user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (user == null) {
@@ -178,7 +157,7 @@ public class AuthenticationService {
         new Thread(r).start();
     }
 
-
+    @Override
     public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
         User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
 
@@ -189,25 +168,23 @@ public class AuthenticationService {
         // Check if the token matches
         if (!token.equals(resetPasswordRequest.getToken())) {
             throw new GlobalException("Invalid token");
-        }else {
+        } else {
             user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
             authenticationRepository.save(user);
             return 1;
         }
 
     }
+
 //    public Account deleteAccount(long id) {
 //        Account account = authenticationRepository.findById(id).orElseThrow(() -> new AuthException("Can not find account"));;
 //        account.setStatus(AccoutStatus.DELETED);
 //        return authenticationRepository.save(account);
 //    }
 
-
-    public User findById(UUID id) {
-        User user = authenticationRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new RuntimeException("Account not found with id: " + id);
-        }
-        return user;
+    @Override
+    public User findById(String id) {
+        return authenticationRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Account not found with id: " + id));
     }
 }

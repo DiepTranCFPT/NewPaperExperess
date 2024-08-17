@@ -1,11 +1,12 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
+@Data
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,7 +17,5 @@ public class Company {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<User> users;
-
-
 }
 

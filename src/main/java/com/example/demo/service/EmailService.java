@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.iservice.IEmailService;
 import com.example.demo.model.EmailDetail;
 import com.example.demo.repository.AuthenticationRepository;
 
@@ -15,7 +16,7 @@ import org.thymeleaf.context.Context;
 
 
 @Service
-public class EmailService {
+public class EmailService implements IEmailService {
 
     private final TemplateEngine templateEngine;
     private final JavaMailSender javaMailSender;
@@ -30,6 +31,7 @@ public class EmailService {
         this.authenticationRepository = authenticationRepository;
     }
 
+    @Override
     public void sendMailTemplate(EmailDetail emailDetail) {
         try {
 
@@ -59,7 +61,7 @@ public class EmailService {
         }
     }
 
-
+    @Override
     public void sendMailTemplateOwner(EmailDetail emailDetail) {
         try {
             Context context = new Context();
@@ -87,6 +89,7 @@ public class EmailService {
         }
     }
 
+    @Override
     public void sendMailTemplateForgot(EmailDetail emailDetail) {
         try {
             // Log recipient email address for debugging
