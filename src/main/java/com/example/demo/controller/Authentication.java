@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 
@@ -76,7 +75,7 @@ public class Authentication {
     @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(
             @Valid @NotNull
-            @RequestParam("token") String token,@RequestBody ResetPasswordRequest resetPasswordRequest) {
+            @RequestParam(value = "token") String token,@RequestBody ResetPasswordRequest resetPasswordRequest) {
 
         if(authenticationService.resetPassword(resetPasswordRequest)==1){
             if(token.equals(resetPasswordRequest.getToken())){
@@ -95,13 +94,13 @@ public class Authentication {
         return null;
     }
     @GetMapping("/account/{id}")
-    public ResponseEntity<User> getAccountById(@NotNull @Valid @PathVariable String id) {
+    public ResponseEntity<User> getAccountById(@NotNull @Valid @PathVariable(value = "id") String id) {
         return ResponseEntity.ok(authenticationService.findById(id));
     }
 
 
     @PostMapping("/verify/{code}")
-    public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable String code) {
+    public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable(value = "code") String code) {
         return ResponseEntity.ok(authenticationService.verify(code));
     }
 
