@@ -6,6 +6,7 @@ import com.example.demo.exception.AuthException;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.GlobalException;
 
+import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.logging.Logger;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
 
     private final AuthenticationRepository authenticationRepository;
     private final TokenService tokenService;
@@ -46,7 +47,9 @@ public class AuthenticationService {
 
     private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
 
+
     @Transactional
+    @Override
     public User register(RegisterRequest registerRequest) {
         User user = new User();
         user.setName(registerRequest.getName());
@@ -80,10 +83,13 @@ public class AuthenticationService {
         return user;
     }
 
+    @Override
     public boolean verify(String verificationCode) {
         return verificationCode.equals(VerifyCode);
     }
 
+
+    @Override
     public AccountResponse login(LoginRequest loginRequest) {
         var account = authenticationRepository.findByEmail(loginRequest.getEmail());
         if (account == null) {
@@ -99,7 +105,7 @@ public class AuthenticationService {
         return accountResponse;
     }
 
-
+    @Override
     public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
         AccountResponse accountResponse;
         try {
@@ -126,7 +132,7 @@ public class AuthenticationService {
         return accountResponse;
     }
 
-
+    @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         User user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (user == null) {
@@ -151,7 +157,7 @@ public class AuthenticationService {
         new Thread(r).start();
     }
 
-
+    @Override
     public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
         User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
 
@@ -169,13 +175,14 @@ public class AuthenticationService {
         }
 
     }
+
 //    public Account deleteAccount(long id) {
 //        Account account = authenticationRepository.findById(id).orElseThrow(() -> new AuthException("Can not find account"));;
 //        account.setStatus(AccoutStatus.DELETED);
 //        return authenticationRepository.save(account);
 //    }
 
-
+    @Override
     public User findById(String id) {
         return authenticationRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Account not found with id: " + id));
