@@ -58,13 +58,6 @@ public class AuthenticationService implements IAuthenticationService {
                 .isEnable(true)
                 .DataActivate(OtherFunctions.DateSystem())
                 .build();
-
-//        user.setName(registerRequest.getName());
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//        user.setEmail(registerRequest.getEmail());
-//        user.setEnable(true);
-//        user.setDataActivate(OtherFunctions.DateSystem());
-
         try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
         } catch (Exception e) {
@@ -146,13 +139,15 @@ public class AuthenticationService implements IAuthenticationService {
             throw new BadRequestException("Account not found");
         }
 
-        EmailDetail emailDetail = new EmailDetail();
-        emailDetail.setRecipient(forgotPasswordRequest.getEmail());
-        emailDetail.setSubject("Reset Password for account " + forgotPasswordRequest.getEmail() + "!!!");
-        emailDetail.setMsgBody(""); // You might want to add a meaningful message here
-        emailDetail.setButtonValue("Reset Password");
-        emailDetail.setLink("http://booking88.online/reset-password?token=" + tokenService.generateToken(user));
-        emailDetail.setName(user.getName());
+        EmailDetail emailDetail = EmailDetail.builder()
+                .recipient(forgotPasswordRequest.getEmail())
+                .subject("Reset Password for account " + forgotPasswordRequest.getEmail() + "!!!")
+                .msgBody("")
+                .buttonValue("Reset Password")
+                .link("http://booking88.online/reset-password?token=" + tokenService.generateToken(user))
+                .name(user.getName())
+                .build();
+
 
         Runnable r = new Runnable() {
             @Override
