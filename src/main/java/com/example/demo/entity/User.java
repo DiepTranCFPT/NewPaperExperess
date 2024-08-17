@@ -4,8 +4,10 @@ package com.example.demo.entity;
 import com.example.demo.infor.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
 
@@ -62,47 +66,7 @@ public class User {
 
     private String DataActivate;
 
-    public User() {
 
-    }
-
-
-//    public User(UserBuilder userBuilder) {
-//        this.name = userBuilder.getName();
-//        this.password = userBuilder.getPassword();
-//        this.phone = userBuilder.getPhone();
-//        this.email = userBuilder.getEmail();
-//        this.DataActivate = userBuilder.getDataActivate();
-//        this.avata = userBuilder.getAvata();
-//        this.role = userBuilder.getRole();
-//        this.company = userBuilder.getCompany();
-//        this.articles = userBuilder.getArticles();
-//        this.ratings = userBuilder.getRatings();
-//        this.comments = userBuilder.getComments();
-//        this.isEnable = userBuilder.isEnable();
-//    }
-//
-//    public User() {}
-//
-//    @Data
-//    public static class UserBuilder {
-//        private String name;
-//        private String password;
-//        private String phone;
-//        private String email;
-//        private String dataActivate;
-//        private byte[] avata;
-//        private Role role;
-//        private Company company;
-//        private List<Article> articles;
-//        private List<Rating> ratings;
-//        private List<Comment> comments;
-//        private boolean isEnable;
-//
-//        public User build() {
-//            return new User(this);
-//        }
-//    }
 }
 
 

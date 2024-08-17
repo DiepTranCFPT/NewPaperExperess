@@ -58,6 +58,7 @@ public class AuthenticationService implements IAuthenticationService {
                 .isEnable(true)
                 .DataActivate(OtherFunctions.DateSystem())
                 .build();
+
 //        user.setName(registerRequest.getName());
 //        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 //        user.setEmail(registerRequest.getEmail());
