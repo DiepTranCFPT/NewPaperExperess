@@ -35,32 +35,17 @@ public class Authentication {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
         User user = authenticationService.register(registerRequest);
         return user != null ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
     }
 
     @PostMapping("/registergg")
-    public ResponseEntity<User> registerGG(@RequestBody RegisterforGoogle registerGGRequest) {
+    public ResponseEntity<String> registerGG(@RequestBody RegisterforGoogle registerGGRequest) {
         User user = authenticationService.registerforGoogle(registerGGRequest);
-        return user != null ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return user != null ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
     }
 
-//    @GetMapping("/verify")
-//    public ResponseEntity<Void> verifyUser(@RequestParam("code") String code) {
-//        boolean verified = authenticationService.verify(code);
-//        if (verified) {
-//            String successUrl = "http://booking88.online/verify_success";
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setLocation(URI.create(successUrl));
-//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-//        } else {
-//            String failureUrl = "http://booking88.online/verify_failed";
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setLocation(URI.create(failureUrl));
-//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-//        }
-//    }
 
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -111,10 +96,4 @@ public class Authentication {
     public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable(value = "code") String code) {
         return ResponseEntity.ok(authenticationService.verify(code));
     }
-
-
-//    @PostMapping("/account")
-//    public ResponseEntity<String> getAccountByPhone(@RequestParam String test) {
-//        return ResponseEntity.ok(test);
-//    }
 }

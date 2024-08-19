@@ -39,21 +39,13 @@ public class SecurityConfig  {
             "/api/registergg/**",
             "/api/account",
             "/api/login/**",
-            "/api/forgot-password",
-            "/api/create",
-            "/api/admin/register",
-            "/api/booking/**",
-            "/api/verify",
-            "/vnpay-payment-return"
+            "/api/forgot-password"
     };
 
     private final String[] PUBLIC_ENDPOINTS_METHOD = {
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-resources/**",
-            "/api/location",
-            "/api/court",
-            "/vnpay-payment-return"
+            "/swagger-resources/**"
     };
 
 
