@@ -66,7 +66,7 @@ public class User {
 
     private String DataActivate;
 
-
+    private String uid;
 }
 
 

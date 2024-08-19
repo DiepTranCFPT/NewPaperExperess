@@ -12,4 +12,5 @@ public interface IAuthenticationService {
     void forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
     int resetPassword(ResetPasswordRequest resetPasswordRequest);
     User findById(String id);
+    User registerforGoogle(RegisterforGoogle GoogleAccount);
 }
