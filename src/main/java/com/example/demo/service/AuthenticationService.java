@@ -6,6 +6,7 @@ import com.example.demo.exception.AuthException;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.GlobalException;
 
+import com.example.demo.infor.Role;
 import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
@@ -57,6 +58,7 @@ public class AuthenticationService implements IAuthenticationService {
                 .email(registerRequest.getEmail())
                 .isEnable(true)
                 .DataActivate(OtherFunctions.DateSystem())
+                .role(Role.USER)
                 .build();
         try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
@@ -188,5 +190,25 @@ public class AuthenticationService implements IAuthenticationService {
     public User findById(String id) {
         return authenticationRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Account not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public User registerforGoogle(RegisterforGoogle GoogleAccount) {
+        User user = User.builder()
+                .name(GoogleAccount.getDisplayName())
+                .email(GoogleAccount.getEmail())
+                .uid(GoogleAccount.getUid())
+                .isEnable(true)
+                .DataActivate(OtherFunctions.DateSystem())
+                .role(Role.USER)
+                .build();
+        authenticationRepository.save(user);
+        try {
+            user = authenticationRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new AuthException("TaiKhoanTontai ");
+        }
+        return user;
     }
 }

@@ -29,15 +29,21 @@ public class Authentication {
 
     @Autowired
     public Authentication(AuthenticationService authenticationService,
-                          EmailService emailService){
+                          EmailService emailService) {
         this.authenticationService = authenticationService;
         this.emailService = emailService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         User user = authenticationService.register(registerRequest);
-        return ResponseEntity.ok(user);
+        return user != null ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
+    }
+
+    @PostMapping("/registergg")
+    public ResponseEntity<User> registerGG(@RequestBody RegisterforGoogle registerGGRequest) {
+        User user = authenticationService.registerforGoogle(registerGGRequest);
+        return user != null ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 //    @GetMapping("/verify")
@@ -75,16 +81,17 @@ public class Authentication {
     @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(
             @Valid @NotNull
-            @RequestParam(value = "token") String token,@RequestBody ResetPasswordRequest resetPasswordRequest) {
+            @RequestParam(value = "token") String token, @RequestBody ResetPasswordRequest resetPasswordRequest) {
 
-        if(authenticationService.resetPassword(resetPasswordRequest)==1){
-            if(token.equals(resetPasswordRequest.getToken())){
+        if (authenticationService.resetPassword(resetPasswordRequest) == 1) {
+            if (token.equals(resetPasswordRequest.getToken())) {
                 String successUrl = "http://booking88.online/verify_success";
                 HttpHeaders headers = new HttpHeaders();
                 headers.setLocation(URI.create(successUrl));
-                return new ResponseEntity<>(headers, HttpStatus.FOUND);}
+                return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            }
 
-        }else {
+        } else {
 
             String successUrl = "http://booking88.online/verify_failed";
             HttpHeaders headers = new HttpHeaders();
@@ -93,6 +100,7 @@ public class Authentication {
         }
         return null;
     }
+
     @GetMapping("/account/{id}")
     public ResponseEntity<User> getAccountById(@NotNull @Valid @PathVariable(value = "id") String id) {
         return ResponseEntity.ok(authenticationService.findById(id));
