@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.infor.CategoryName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private CategoryName categoryName;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Type> types;
