@@ -9,13 +9,12 @@ import java.util.List;
 
 @Data
 public class ArticleRequest {
-    private String id;
     private String title;
     private String content;
     private String status;
     private String publishedDate;
     private String createdDate;
     private String titlePhoto;
-    private String author;
+    private String author_id;
     private Type type;
 }
