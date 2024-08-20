@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,7 @@ public class Article {
     private String titlePhoto;
 
     @ManyToOne
+    @NotNull
     private User author;
 
     @OneToOne

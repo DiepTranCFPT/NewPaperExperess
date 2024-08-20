@@ -1,6 +1,7 @@
 package com.example.demo.model.Response;
 
 import com.example.demo.entity.*;
+import com.example.demo.utils.OtherFunctions;
 import lombok.Data;
 
 import java.util.List;
@@ -34,16 +35,10 @@ public class ArticleResponse {
         this.type = article.getType();
         this.comments = article.getComments();
         this.mediaList = article.getMediaList();
-        this.ratings = rating(article.getRatings());
+        this.ratings = OtherFunctions.rating(article.getRatings());
     }
 
-    public static int rating(List<Rating> articles){
-        int rating = 0;
-        for (Rating r : articles){
-            rating += r.getRating();
-        }
-        return rating / articles.size();
-    }
+
 
 }
 
