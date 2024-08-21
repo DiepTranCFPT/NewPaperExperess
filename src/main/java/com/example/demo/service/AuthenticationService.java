@@ -14,9 +14,11 @@ import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
 
 import com.example.demo.utils.OtherFunctions;
+import com.example.demo.utils.SendMailUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,7 @@ public class AuthenticationService implements IAuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private String VerifyCode;
+    private User user;
 
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
@@ -52,7 +55,8 @@ public class AuthenticationService implements IAuthenticationService {
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
-        User user = User.builder()
+        VerifyCode = OtherFunctions.generateRandomNumberString();
+        user = User.builder()
                 .name(registerRequest.getName())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
@@ -60,28 +64,25 @@ public class AuthenticationService implements IAuthenticationService {
                 .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .build();
+
         try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
+            emailService.sendMailVerification("Verifycode Regis account", registerRequest.getEmail(), VerifyCode, SendMailUtils.Template(VerifyCode));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        authenticationRepository.save(user);
-        try {
-            user = authenticationRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new AuthException("Duplicate");
-        }
+//        authenticationRepository.save(user);
+//        try {
+//            user = authenticationRepository.save(user);
+//        } catch (DataIntegrityViolationException e) {
+//            throw new AuthException("Duplicate");
+//        }
+//        try {
+//
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        }
 
-        VerifyCode = OtherFunctions.generateRandomNumberString();
-
-//        EmailDetail emailDetail = new EmailDetail();
-//        emailDetail.setRecipient(registerRequest.getEmail());
-//        emailDetail.setSubject("Verify your registration");
-//        emailDetail.setName(registerRequest.getName());
-//        String verifyURL = "http://booking88.online/api/verify?code="+account.getVerificationCode();
-//        emailDetail.setLink(verifyURL);
-//        emailDetail.setButtonValue("Verify Email");
-//        emailService.sendMailTemplate(emailDetail);
         return user;
     }
 
@@ -136,34 +137,16 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        User user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
+         user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (user == null) {
             throw new BadRequestException("Account not found");
         }
 
-        EmailDetail emailDetail = EmailDetail.builder()
-                .recipient(forgotPasswordRequest.getEmail())
-                .subject("Reset Password for account " + forgotPasswordRequest.getEmail() + "!!!")
-                .msgBody("")
-                .buttonValue("Reset Password")
-                .link("http://booking88.online/reset-password?token=" + tokenService.generateToken(user))
-                .name(user.getName())
-                .build();
-
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                emailService.sendMailTemplateForgot(emailDetail);
-            }
-        };
-
-        new Thread(r).start();
     }
 
     @Override
     public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
+         user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
 
         if (user == null) {
             throw new GlobalException("Not found email");
@@ -195,7 +178,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
-        User user = User.builder()
+         user = User.builder()
                 .name(GoogleAccount.getDisplayName())
                 .email(GoogleAccount.getEmail())
                 .uid(GoogleAccount.getUid())

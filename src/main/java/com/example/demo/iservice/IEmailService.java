@@ -1,9 +1,9 @@
 package com.example.demo.iservice;
 
-import com.example.demo.model.EmailDetail;
+import jakarta.mail.MessagingException;
+
+import java.util.function.Function;
 
 public interface IEmailService {
-    void sendMailTemplate(EmailDetail emailDetail);
-    void sendMailTemplateOwner(EmailDetail emailDetail);
-    void sendMailTemplateForgot(EmailDetail emailDetail);
+    void sendMailVerification(String Subject,String email, String codeVerifi, Function<String, String> function) throws MessagingException;
 }
