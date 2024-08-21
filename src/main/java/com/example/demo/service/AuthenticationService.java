@@ -55,6 +55,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
+        if (authenticationRepository.findByEmail(registerRequest.getEmail()) != null) {
+            throw new AuthException("Email already in use");
+        }
         VerifyCode = OtherFunctions.generateRandomNumberString();
         user = User.builder()
                 .name(registerRequest.getName())
@@ -64,31 +67,22 @@ public class AuthenticationService implements IAuthenticationService {
                 .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .build();
-
         try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
             emailService.sendMailVerification("Verifycode Regis account", registerRequest.getEmail(), VerifyCode, SendMailUtils.Template(VerifyCode));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-//        authenticationRepository.save(user);
-//        try {
-//            user = authenticationRepository.save(user);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new AuthException("Duplicate");
-//        }
-//        try {
-//
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        }
-
         return user;
     }
 
     @Override
     public boolean verify(String verificationCode) {
-        return verificationCode.equals(VerifyCode);
+        if(verificationCode.equals(VerifyCode)){
+            user = authenticationRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
 
