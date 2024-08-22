@@ -23,7 +23,10 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    public void sendMailVerification(String subject,String email, String codeVerifi, Function<String, String> function)throws MessagingException {
+    public void sendMailVerification(String subject, String email,
+                                     String codeVerifi,
+                                     Function<String, String> function) throws MessagingException {
+
         MimeMessage message = javaMailSender.createMimeMessage();
 
         message.setFrom(new InternetAddress("newsexpressproject@gmail.com"));

@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -53,7 +54,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
-        if (authenticationRepository.findByEmail(registerRequest.getEmail()) != null) {
+        if (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
             throw new AuthException("Email already in use");
         }
         VerifyCode = OtherFunctions.generateRandomNumberString();
@@ -68,6 +69,7 @@ public class AuthenticationService implements IAuthenticationService {
         try {
 
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
+
             emailService.sendMailVerification("Verifycode Regis account",
                     registerRequest.getEmail(),
                     VerifyCode,
@@ -91,79 +93,91 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public AccountResponse login(LoginRequest loginRequest) {
-        var account = authenticationRepository.findByEmail(loginRequest.getEmail());
-        if (account == null) {
-            throw new AuthException("Account not found with email: " + loginRequest.getEmail());
-        }
-        if (!passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
+        user = authenticationRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
+        AccountResponse accountResponse;
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new AuthException("Wrong Id Or Password");
         }
 
-        String token = tokenService.generateToken(account);
-        AccountResponse accountResponse = new AccountResponse(account);
+        String token = tokenService.generateToken(user);
+        accountResponse = new AccountResponse(user);
         accountResponse.setToken(token);
+        
         return accountResponse;
     }
 
     @Override
     public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
-        AccountResponse accountResponse;
-        try {
-            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
-            String email = firebaseToken.getEmail();
-            User user = authenticationRepository.findByEmail(email);
+//        AccountResponse accountResponse;
+//        try {
+//            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
+//            String email = firebaseToken.getEmail();
+//            user = authenticationRepository.findByEmail(email);
+//
+//            if (user == null) {
+//                user = new User();
+//                user.setName(firebaseToken.getName());
+//                user.setEmail(firebaseToken.getEmail());
+//                user = authenticationRepository.save(user);
+//
+//            }
+//            accountResponse = new AccountResponse(user);
+//            String token = tokenService.generateToken(user);
+//            accountResponse.setToken(token);
+//
+//        } catch (FirebaseAuthException e) {
+//            logger.severe("Firebase authentication error: " + e.getMessage());
+//            throw new BadRequestException("Invalid Google token");
+//        }
 
-            if (user == null) {
-                user = new User();
-                user.setName(firebaseToken.getName());
-                user.setEmail(firebaseToken.getEmail());
-                user = authenticationRepository.save(user);
-
-            }
-            accountResponse = new AccountResponse(user);
-            String token = tokenService.generateToken(user);
-            accountResponse.setToken(token);
-
-        } catch (FirebaseAuthException e) {
-            logger.severe("Firebase authentication error: " + e.getMessage());
-            throw new BadRequestException("Invalid Google token");
-        }
-
-        return accountResponse;
+        return null;
     }
 
     @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-        if (user == null) {
-            throw new BadRequestException("Account not found");
-        }
+//        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
+//        if (user == null) {
+//            throw new BadRequestException("Account not found");
+//        }
 
     }
 
     @Override
-    public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
+    public User verifyForgotPassword(String verificationCode) {
+        return null;
+    }
 
+
+    @Override
+    public User resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Optional<User> user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
+        user.ifPresent(user1 -> {
+
+
+        });
         if (user == null) {
             throw new GlobalException("Not found email");
         }
-        String token = tokenService.generateToken(user);
-        if (!token.equals(resetPasswordRequest.getToken())) {
-            throw new GlobalException("Invalid token");
-        } else {
-            user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
-            authenticationRepository.save(user);
-            return 1;
-        }
 
+//        if (!token.equals(resetPasswordRequest.getToken())) {
+//            throw new GlobalException("Invalid token");
+//        } else {
+//            VerifyCode = OtherFunctions.generateRandomNumberString();
+//            try {
+//                emailService.sendMailVerification("Verifycode Regis account",
+//                        resetPasswordRequest.getEmail(),
+//                        VerifyCode,
+//                        SendMailUtils.Template(VerifyCode));
+//                return user;
+//            } catch (MessagingException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+        return null;
     }
 
-//    public Account deleteAccount(long id) {
-//        Account account = authenticationRepository.findById(id).orElseThrow(() -> new AuthException("Can not find account"));;
-//        account.setStatus(AccoutStatus.DELETED);
-//        return authenticationRepository.save(account);
-//    }
 
     @Override
     public User findById(String id) {
@@ -190,4 +204,6 @@ public class AuthenticationService implements IAuthenticationService {
         }
         return user;
     }
+
+
 }
