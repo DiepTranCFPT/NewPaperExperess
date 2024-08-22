@@ -12,12 +12,8 @@ import com.example.demo.repository.AuthenticationRepository;
 
 import com.example.demo.utils.OtherFunctions;
 import com.example.demo.utils.SendMailUtils;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,6 +149,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User changePassword(String newPassword) {
+        if(passwordEncoder.matches(newPassword, user.getPassword())){
+            new AuthException("Password matches old password");
+        }
         user.setPassword(passwordEncoder.encode(newPassword));
         return authenticationRepository.save(user);
     }
@@ -160,7 +159,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
+        user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
 
         if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword())) {
