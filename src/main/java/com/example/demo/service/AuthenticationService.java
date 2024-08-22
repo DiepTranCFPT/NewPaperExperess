@@ -3,12 +3,9 @@ package com.example.demo.service;
 import com.example.demo.entity.User;
 
 import com.example.demo.exception.AuthException;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.GlobalException;
 
 import com.example.demo.infor.Role;
 import com.example.demo.iservice.IAuthenticationService;
-import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
@@ -24,8 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.logging.Logger;
 
 @Service
 public class AuthenticationService implements IAuthenticationService {
@@ -48,13 +43,12 @@ public class AuthenticationService implements IAuthenticationService {
         this.emailService = emailService;
     }
 
-
-    private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
-
-
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
+        if (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new AuthException("Email already in use");
+        }
         VerifyCode = OtherFunctions.generateRandomNumberString();
         user = User.builder()
                 .name(registerRequest.getName())
@@ -64,110 +58,121 @@ public class AuthenticationService implements IAuthenticationService {
                 .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .build();
-
         try {
+
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
-            emailService.sendMailVerification("Verifycode Regis account", registerRequest.getEmail(), VerifyCode, SendMailUtils.Template(VerifyCode));
+
+            emailService.sendMailVerification("Verifycode Regis account",
+                    registerRequest.getEmail(),
+                    VerifyCode,
+                    SendMailUtils.Template(VerifyCode));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-//        authenticationRepository.save(user);
-//        try {
-//            user = authenticationRepository.save(user);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new AuthException("Duplicate");
-//        }
-//        try {
-//
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        }
-
         return user;
     }
 
     @Override
     public boolean verify(String verificationCode) {
-        return verificationCode.equals(VerifyCode);
+        if (verificationCode.equals(VerifyCode)) {
+            user = authenticationRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
 
     @Override
+    @Transactional
     public AccountResponse login(LoginRequest loginRequest) {
-        var account = authenticationRepository.findByEmail(loginRequest.getEmail());
-        if (account == null) {
-            throw new AuthException("Account not found with email: " + loginRequest.getEmail());
-        }
-        if (!passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
+        user = authenticationRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
+        AccountResponse accountResponse;
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new AuthException("Wrong Id Or Password");
         }
 
-        String token = tokenService.generateToken(account);
-        AccountResponse accountResponse = new AccountResponse(account);
-        accountResponse.setToken(token);
-        return accountResponse;
-    }
-
-    @Override
-    public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
-        AccountResponse accountResponse;
-        try {
-            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
-            String email = firebaseToken.getEmail();
-            User user = authenticationRepository.findByEmail(email);
-
-            if (user == null) {
-                user = new User();
-                user.setName(firebaseToken.getName());
-                user.setEmail(firebaseToken.getEmail());
-                user = authenticationRepository.save(user);
-
-            }
-            accountResponse = new AccountResponse(user);
-            String token = tokenService.generateToken(user);
-            accountResponse.setToken(token);
-
-        } catch (FirebaseAuthException e) {
-            logger.severe("Firebase authentication error: " + e.getMessage());
-            throw new BadRequestException("Invalid Google token");
-        }
-
-        return accountResponse;
-    }
-
-    @Override
-    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-         user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-        if (user == null) {
-            throw new BadRequestException("Account not found");
-        }
-
-    }
-
-    @Override
-    public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
-         user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
-
-        if (user == null) {
-            throw new GlobalException("Not found email");
-        }
         String token = tokenService.generateToken(user);
-        // Check if the token matches
-        if (!token.equals(resetPasswordRequest.getToken())) {
-            throw new GlobalException("Invalid token");
-        } else {
-            user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
-            authenticationRepository.save(user);
-            return 1;
-        }
+        accountResponse = new AccountResponse(user);
+        accountResponse.setToken(token);
 
+        return accountResponse;
     }
 
-//    public Account deleteAccount(long id) {
-//        Account account = authenticationRepository.findById(id).orElseThrow(() -> new AuthException("Can not find account"));;
-//        account.setStatus(AccoutStatus.DELETED);
-//        return authenticationRepository.save(account);
-//    }
+    @Override
+    @Transactional
+    public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
+//        AccountResponse accountResponse;
+//        try {
+//            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
+//            String email = firebaseToken.getEmail();
+//            user = authenticationRepository.findByEmail(email);
+//
+//            if (user == null) {
+//                user = new User();
+//                user.setName(firebaseToken.getName());
+//                user.setEmail(firebaseToken.getEmail());
+//                user = authenticationRepository.save(user);
+//
+//            }
+//            accountResponse = new AccountResponse(user);
+//            String token = tokenService.generateToken(user);
+//            accountResponse.setToken(token);
+//
+//        } catch (FirebaseAuthException e) {
+//            logger.severe("Firebase authentication error: " + e.getMessage());
+//            throw new BadRequestException("Invalid Google token");
+//        }
+
+        return null;
+    }
+
+
+
+
+    @Override
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + forgotPasswordRequest.getEmail()));
+
+        VerifyCode = OtherFunctions.generateRandomNumberString();
+
+        try {
+            emailService.sendMailVerification("Verifycode forgot account",
+                    forgotPasswordRequest.getEmail(),
+                    VerifyCode,
+                    SendMailUtils.Template(VerifyCode));
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public User changePassword(String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return authenticationRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
+
+        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new AuthException("Wrong password");
+        }
+
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        authenticationRepository.save(user);
+
+        return true;
+    }
+
 
     @Override
     public User findById(String id) {
@@ -178,7 +183,10 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
-         user = User.builder()
+        if (authenticationRepository.existsByUid(GoogleAccount.getUid())) {
+            throw new AuthException("TaiKhoanTontai ");
+        }
+        user = User.builder()
                 .name(GoogleAccount.getDisplayName())
                 .email(GoogleAccount.getEmail())
                 .uid(GoogleAccount.getUid())
@@ -187,11 +195,6 @@ public class AuthenticationService implements IAuthenticationService {
                 .role(Role.USER)
                 .build();
         authenticationRepository.save(user);
-        try {
-            user = authenticationRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new AuthException("TaiKhoanTontai ");
-        }
         return user;
     }
 }
