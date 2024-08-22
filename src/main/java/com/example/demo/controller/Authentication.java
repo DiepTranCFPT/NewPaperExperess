@@ -59,11 +59,21 @@ public class Authentication {
     }
 
     @PostMapping("/forgot-password")
-    public void forgotpassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        authenticationService.forgotPassword(forgotPasswordRequest);
+    public void forgotpassword(@RequestParam @NotNull @Valid String email) {
+        authenticationService.forgotPassword(email);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/send-verification-email/{code}")
+    public ResponseEntity<Boolean> sendVerificationEmail(@PathVariable(value = "code") @NotNull String veString) {
+        return ResponseEntity.ok(authenticationService.verifyToforgot(veString));
+    }
+
+    @PutMapping("/forgot-password")
+    public ResponseEntity<User> forgotpasswordKey(@RequestParam String password) {
+        return ResponseEntity.ok(authenticationService.changePassword(password));
+    }
+
+    @PostMapping("/resetpassword")
     public ResponseEntity<Boolean> resetPassword(
             @Valid @NotNull
             @RequestBody ResetPasswordRequest resetPasswordRequest) {

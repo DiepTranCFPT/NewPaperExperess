@@ -9,9 +9,10 @@ public interface IAuthenticationService {
     boolean verify(String verificationCode);
     AccountResponse login(LoginRequest loginRequest);
     AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest);
-    void forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
+    void forgotPassword(String email);
     boolean resetPassword(ResetPasswordRequest resetPasswordRequest);
     User findById(String id);
     User registerforGoogle(RegisterforGoogle GoogleAccount);
     User changePassword(String newPassword);
+    boolean verifyToforgot(String verificationCode);
 }
