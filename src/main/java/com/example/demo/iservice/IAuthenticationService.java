@@ -10,8 +10,8 @@ public interface IAuthenticationService {
     AccountResponse login(LoginRequest loginRequest);
     AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest);
     void forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
-    User resetPassword(ResetPasswordRequest resetPasswordRequest);
+    boolean resetPassword(ResetPasswordRequest resetPasswordRequest);
     User findById(String id);
     User registerforGoogle(RegisterforGoogle GoogleAccount);
-    User verifyForgotPassword(String verificationCode);
+    User changePassword(String newPassword);
 }

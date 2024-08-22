@@ -17,6 +17,7 @@ import com.example.demo.utils.SendMailUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class AuthenticationService implements IAuthenticationService {
@@ -48,7 +48,6 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
 
-    private static final Logger logger = Logger.getLogger(AuthenticationService.class.getName());
 
 
     @Transactional
@@ -104,7 +103,7 @@ public class AuthenticationService implements IAuthenticationService {
         String token = tokenService.generateToken(user);
         accountResponse = new AccountResponse(user);
         accountResponse.setToken(token);
-        
+
         return accountResponse;
     }
 
@@ -135,47 +134,48 @@ public class AuthenticationService implements IAuthenticationService {
         return null;
     }
 
+
+
+
     @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-//        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
-//        if (user == null) {
-//            throw new BadRequestException("Account not found");
-//        }
+        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + forgotPasswordRequest.getEmail()));
 
+        VerifyCode = OtherFunctions.generateRandomNumberString();
+
+        try {
+            emailService.sendMailVerification("Verifycode forgot account",
+                    forgotPasswordRequest.getEmail(),
+                    VerifyCode,
+                    SendMailUtils.Template(VerifyCode));
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public User verifyForgotPassword(String verificationCode) {
-        return null;
+    public User changePassword(String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return authenticationRepository.save(user);
     }
 
 
+
+
     @Override
-    public User resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        Optional<User> user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
-        user.ifPresent(user1 -> {
+    public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
+                .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
 
-
-        });
-        if (user == null) {
-            throw new GlobalException("Not found email");
+        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new AuthException("Wrong password");
         }
 
-//        if (!token.equals(resetPasswordRequest.getToken())) {
-//            throw new GlobalException("Invalid token");
-//        } else {
-//            VerifyCode = OtherFunctions.generateRandomNumberString();
-//            try {
-//                emailService.sendMailVerification("Verifycode Regis account",
-//                        resetPasswordRequest.getEmail(),
-//                        VerifyCode,
-//                        SendMailUtils.Template(VerifyCode));
-//                return user;
-//            } catch (MessagingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-        return null;
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        authenticationRepository.save(user);
+
+        return true;
     }
 
 
@@ -204,6 +204,8 @@ public class AuthenticationService implements IAuthenticationService {
         }
         return user;
     }
+
+
 
 
 }
