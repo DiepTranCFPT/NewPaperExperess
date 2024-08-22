@@ -14,7 +14,7 @@ public class AccountResponse {
     private String id;
     private String name;
     private String email;
-    private String avatar;
+    private byte[] avatar;
     private Role role;
     private String DataActivate;
     private String phone;
@@ -24,7 +24,7 @@ public class AccountResponse {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
-        this.avatar = Base64.getEncoder().encodeToString(user.getAvata());
+        this.avatar = user.getAvata();
         this.role = user.getRole();
         this.DataActivate = user.getDataActivate();
         this.phone = user.getPhone();

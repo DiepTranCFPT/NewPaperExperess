@@ -64,26 +64,10 @@ public class Authentication {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<Void> resetPassword(
+    public ResponseEntity<Boolean> resetPassword(
             @Valid @NotNull
-            @RequestParam(value = "token") String token, @RequestBody ResetPasswordRequest resetPasswordRequest) {
-
-        if (authenticationService.resetPassword(resetPasswordRequest) == 1) {
-            if (token.equals(resetPasswordRequest.getToken())) {
-                String successUrl = "http://booking88.online/verify_success";
-                HttpHeaders headers = new HttpHeaders();
-                headers.setLocation(URI.create(successUrl));
-                return new ResponseEntity<>(headers, HttpStatus.FOUND);
-            }
-
-        } else {
-
-            String successUrl = "http://booking88.online/verify_failed";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create(successUrl));
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-        }
-        return null;
+            @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return ResponseEntity.ok(authenticationService.resetPassword(resetPasswordRequest));
     }
 
     @GetMapping("/account/{id}")

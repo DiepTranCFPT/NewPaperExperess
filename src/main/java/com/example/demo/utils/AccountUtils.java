@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AccountUtils {
-    @Autowired
-    AuthenticationRepository userRepository;
-
-    public User getCurrentUser(){
-        String email=  SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email);
-        return user;
-        }
+//    @Autowired
+//    AuthenticationRepository userRepository;
+//
+//    public User getCurrentUser(){
+//        String email=  SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userRepository.findByEmail(email);
+//        return user;
+//        }
 }
