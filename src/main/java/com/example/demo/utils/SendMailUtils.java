@@ -18,7 +18,7 @@ public class SendMailUtils {
                 "\n" +
                 "                <tr>\n" +
                 "                    <td class=\"body\" style=\"padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;\">\n" +
-                "                        Hello, All! <br>\n" +
+                "                        Hello,"+ input+" <br>\n" +
                 "                        This is your confirmation code.\n" +
                 "                        <br><br>\n" +
                 "                        Don't share it with anyone.\n" +

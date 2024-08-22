@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Data
@@ -18,7 +20,7 @@ public class Media {
     private String id;
 
     @Lob
-    private byte[] data;
+    private List<byte[]> data;
 
     private String type;
     private String uploadedDate;

@@ -8,7 +8,6 @@ import com.example.demo.exception.GlobalException;
 
 import com.example.demo.infor.Role;
 import com.example.demo.iservice.IAuthenticationService;
-import com.example.demo.model.EmailDetail;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
@@ -18,7 +17,6 @@ import com.example.demo.utils.SendMailUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,8 +66,13 @@ public class AuthenticationService implements IAuthenticationService {
                 .role(Role.USER)
                 .build();
         try {
+
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
-            emailService.sendMailVerification("Verifycode Regis account", registerRequest.getEmail(), VerifyCode, SendMailUtils.Template(VerifyCode));
+            emailService.sendMailVerification("Verifycode Regis account",
+                    registerRequest.getEmail(),
+                    VerifyCode,
+                    SendMailUtils.Template(VerifyCode));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -78,7 +81,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public boolean verify(String verificationCode) {
-        if(verificationCode.equals(VerifyCode)){
+        if (verificationCode.equals(VerifyCode)) {
             user = authenticationRepository.save(user);
             return true;
         }
@@ -131,7 +134,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-         user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
+        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail());
         if (user == null) {
             throw new BadRequestException("Account not found");
         }
@@ -140,13 +143,12 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public int resetPassword(ResetPasswordRequest resetPasswordRequest) {
-         user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
+        user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail());
 
         if (user == null) {
             throw new GlobalException("Not found email");
         }
         String token = tokenService.generateToken(user);
-        // Check if the token matches
         if (!token.equals(resetPasswordRequest.getToken())) {
             throw new GlobalException("Invalid token");
         } else {
@@ -172,7 +174,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
-         user = User.builder()
+        user = User.builder()
                 .name(GoogleAccount.getDisplayName())
                 .email(GoogleAccount.getEmail())
                 .uid(GoogleAccount.getUid())
