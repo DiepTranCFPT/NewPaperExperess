@@ -3,8 +3,6 @@ package com.example.demo.service;
 import com.example.demo.entity.User;
 
 import com.example.demo.exception.AuthException;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.GlobalException;
 
 import com.example.demo.infor.Role;
 import com.example.demo.iservice.IAuthenticationService;
@@ -23,8 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class AuthenticationService implements IAuthenticationService {
@@ -46,9 +42,6 @@ public class AuthenticationService implements IAuthenticationService {
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
-
-
-
 
     @Transactional
     @Override
@@ -91,6 +84,7 @@ public class AuthenticationService implements IAuthenticationService {
 
 
     @Override
+    @Transactional
     public AccountResponse login(LoginRequest loginRequest) {
         user = authenticationRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
@@ -108,6 +102,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
+    @Transactional
     public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
 //        AccountResponse accountResponse;
 //        try {
@@ -138,6 +133,7 @@ public class AuthenticationService implements IAuthenticationService {
 
 
     @Override
+    @Transactional
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + forgotPasswordRequest.getEmail()));
@@ -155,15 +151,14 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
+    @Transactional
     public User changePassword(String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         return authenticationRepository.save(user);
     }
 
-
-
-
     @Override
+    @Transactional
     public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
         User user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
@@ -188,6 +183,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
+        if (authenticationRepository.existsByUid(GoogleAccount.getUid())) {
+            throw new AuthException("TaiKhoanTontai ");
+        }
         user = User.builder()
                 .name(GoogleAccount.getDisplayName())
                 .email(GoogleAccount.getEmail())
@@ -197,15 +195,6 @@ public class AuthenticationService implements IAuthenticationService {
                 .role(Role.USER)
                 .build();
         authenticationRepository.save(user);
-        try {
-            user = authenticationRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new AuthException("TaiKhoanTontai ");
-        }
         return user;
     }
-
-
-
-
 }
