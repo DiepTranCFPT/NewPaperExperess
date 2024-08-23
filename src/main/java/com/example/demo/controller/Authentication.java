@@ -5,18 +5,14 @@ import com.example.demo.entity.User;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.service.AuthenticationService;
-import com.example.demo.service.EmailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.net.URI;
 
 @RestController
 @SecurityRequirement(name = "api")
@@ -25,13 +21,10 @@ import java.net.URI;
 public class Authentication {
 
     private final AuthenticationService authenticationService;
-    private final EmailService emailService;
 
     @Autowired
-    public Authentication(AuthenticationService authenticationService,
-                          EmailService emailService) {
+    public Authentication(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.emailService = emailService;
     }
 
     @PostMapping("/register")
