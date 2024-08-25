@@ -11,7 +11,8 @@ import java.util.Random;
 
 public class OtherFunctions {
     public static byte[] UploadImg(String fileName) throws Exception {
-        try (InputStream inputStream = Objects.requireNonNull(OtherFunctions.class.getClassLoader().getResourceAsStream(fileName), "File not found: " + fileName)) {
+        try (InputStream inputStream = Objects.requireNonNull(OtherFunctions.class.getClassLoader()
+                .getResourceAsStream(fileName), "File not found: " + fileName)) {
             return inputStream.readAllBytes();
         }
     }
@@ -24,9 +25,9 @@ public class OtherFunctions {
         return String.format("%06d", new Random().nextInt(100000));
     }
 
-    public static int rating(List<Rating> articles){
+    public static int rating(List<Rating> articles) {
         int rating = 0;
-        for (Rating r : articles){
+        for (Rating r : articles) {
             rating += r.getRating();
         }
         return rating / articles.size();

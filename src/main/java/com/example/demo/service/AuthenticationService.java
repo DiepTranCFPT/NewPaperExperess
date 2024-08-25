@@ -42,9 +42,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Transactional
     @Override
     public User register(RegisterRequest registerRequest) {
-        if (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
+        if (authenticationRepository.existsByEmail(registerRequest.getEmail()))
             throw new AuthException("Email already in use");
-        }
+
         VerifyCode = OtherFunctions.generateRandomNumberString();
         user = User.builder()
                 .name(registerRequest.getName())
@@ -72,7 +72,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public boolean verify(String verificationCode) {
         if (verificationCode.equals(VerifyCode)) {
-            user = authenticationRepository.save(user);
+            authenticationRepository.save(user);
             return true;
         }
         return false;
@@ -86,9 +86,9 @@ public class AuthenticationService implements IAuthenticationService {
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
         AccountResponse accountResponse;
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
             throw new AuthException("Wrong Id Or Password");
-        }
+
 
         String token = tokenService.generateToken(user);
         accountResponse = new AccountResponse(user);
@@ -126,19 +126,17 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
 
-
-
     @Override
     @Transactional
-    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        user = authenticationRepository.findByEmail(forgotPasswordRequest.getEmail())
-                .orElseThrow(() -> new AuthException("Account not found with email: " + forgotPasswordRequest.getEmail()));
+    public void forgotPassword(String email) {
+        user = authenticationRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthException("Account not found with email: " + email));
 
         VerifyCode = OtherFunctions.generateRandomNumberString();
 
         try {
             emailService.sendMailVerification("Verifycode forgot account",
-                    forgotPasswordRequest.getEmail(),
+                    email,
                     VerifyCode,
                     SendMailUtils.Template(VerifyCode));
         } catch (MessagingException e) {
@@ -146,14 +144,17 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
 
+
     @Override
     @Transactional
     public User changePassword(String newPassword) {
-        if(passwordEncoder.matches(newPassword, user.getPassword())){
-            new AuthException("Password matches old password");
-        }
         user.setPassword(passwordEncoder.encode(newPassword));
         return authenticationRepository.save(user);
+    }
+
+    @Override
+    public boolean verifyToforgot(String verificationCode) {
+        return verificationCode.equals(VerifyCode);
     }
 
     @Override
@@ -162,9 +163,8 @@ public class AuthenticationService implements IAuthenticationService {
         user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
 
-        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword()))
             throw new AuthException("Wrong password");
-        }
 
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         authenticationRepository.save(user);
@@ -182,9 +182,9 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
-        if (authenticationRepository.existsByUid(GoogleAccount.getUid())) {
+        if (authenticationRepository.existsByUid(GoogleAccount.getUid()))
             throw new AuthException("TaiKhoanTontai ");
-        }
+
         user = User.builder()
                 .name(GoogleAccount.getDisplayName())
                 .email(GoogleAccount.getEmail())
