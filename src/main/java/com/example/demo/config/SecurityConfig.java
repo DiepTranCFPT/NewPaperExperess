@@ -40,7 +40,8 @@ public class SecurityConfig  {
             "/api/registergg/**",
             "/api/account",
             "/api/login/**",
-            "/api/forgot-password"
+            "/api/forgot-password",
+            "/api/test/**",
     };
 
     private final String[] PUBLIC_ENDPOINTS_METHOD = {

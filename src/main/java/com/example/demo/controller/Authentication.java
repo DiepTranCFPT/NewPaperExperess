@@ -5,14 +5,18 @@ import com.example.demo.entity.User;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.FirebaseService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 @RestController
 @SecurityRequirement(name = "api")
@@ -21,10 +25,13 @@ import javax.validation.constraints.NotNull;
 public class Authentication {
 
     private final AuthenticationService authenticationService;
+    private final FirebaseService firebaseService;
 
     @Autowired
-    public Authentication(AuthenticationService authenticationService) {
+    public Authentication(AuthenticationService authenticationService
+            , FirebaseService firebaseService) {
         this.authenticationService = authenticationService;
+        this.firebaseService = firebaseService;
     }
 
     @PostMapping("/register")
@@ -82,5 +89,11 @@ public class Authentication {
     @PostMapping("/verify/{code}")
     public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable(value = "code") String code) {
         return ResponseEntity.ok(authenticationService.verify(code));
+    }
+
+
+    @GetMapping("/test/{id}")
+    public ResponseEntity<BufferedImage> test(@RequestParam(value = "id") String id) {
+        return ResponseEntity.ok(authenticationService.getimg(id));
     }
 }
