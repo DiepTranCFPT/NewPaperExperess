@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 @Service
 public class AuthenticationService implements IAuthenticationService {
 
@@ -196,4 +199,16 @@ public class AuthenticationService implements IAuthenticationService {
         authenticationRepository.save(user);
         return user;
     }
+
+    public BufferedImage getimg(String id){
+        user = authenticationRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Account not found with id: " + id));
+        try {
+            return OtherFunctions.convertByteArrayToImage(user.getAvata());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

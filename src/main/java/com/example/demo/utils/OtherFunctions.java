@@ -2,6 +2,10 @@ package com.example.demo.utils;
 
 import com.example.demo.entity.Rating;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +18,11 @@ public class OtherFunctions {
         try (InputStream inputStream = Objects.requireNonNull(OtherFunctions.class.getClassLoader()
                 .getResourceAsStream(fileName), "File not found: " + fileName)) {
             return inputStream.readAllBytes();
+        }
+    }
+    public static BufferedImage convertByteArrayToImage(byte[] imageData) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(imageData)) {
+            return ImageIO.read(bais);
         }
     }
 

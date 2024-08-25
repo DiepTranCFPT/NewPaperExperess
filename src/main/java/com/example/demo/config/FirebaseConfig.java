@@ -7,20 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
     @Bean
-    public void initializeFirebase() throws IOException {
+    public FirebaseApp initializeFirebase() throws Exception {
         FileInputStream serviceAccount =
-                new FileInputStream("path/to/firebase-config.json");
+                new FileInputStream("src/main/resources/firebase-admin.json");
 
-        FirebaseOptions options = FirebaseOptions.builder()
+        FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setStorageBucket("your-project-id.appspot.com")
+                .setDatabaseUrl("newsprojectexpress.appspot.com")
                 .build();
 
-        FirebaseApp.initializeApp(options);
+      return   FirebaseApp.initializeApp(options);
     }
 }
