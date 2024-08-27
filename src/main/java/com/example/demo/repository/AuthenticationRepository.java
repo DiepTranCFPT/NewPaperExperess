@@ -10,8 +10,7 @@ import java.util.UUID;
 
 public interface AuthenticationRepository extends JpaRepository<User, String>
 {   // dua ra daatabase
-//    User findByEmail(String email);
-//    User findByVerificationCode(String code);
+
      Optional<User> findByEmail(String email);
      boolean existsByEmail(String email);
      boolean existsByUid(String uid);
