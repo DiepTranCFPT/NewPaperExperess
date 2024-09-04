@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.User;
-
 import com.example.demo.exception.AuthException;
-
 import com.example.demo.infor.Role;
 import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.model.Request.*;
