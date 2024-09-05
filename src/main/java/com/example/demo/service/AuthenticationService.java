@@ -12,6 +12,9 @@ import com.example.demo.utils.OtherFunctions;
 import com.example.demo.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Service
-public class AuthenticationService implements IAuthenticationService {
+public class AuthenticationService implements IAuthenticationService, UserDetailsService {
 
     private final AuthenticationRepository authenticationRepository;
     private final TokenService tokenService;
@@ -207,4 +210,12 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        user = authenticationRepository.findByName(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return user;
+    }
 }
