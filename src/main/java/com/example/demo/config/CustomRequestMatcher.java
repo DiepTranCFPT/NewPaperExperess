@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class CustomRequestMatcher implements RequestMatcher {
+public class  CustomRequestMatcher implements RequestMatcher {
     private final List<String> PUBLIC_ENDPOINTS_METHOD;
 
     public CustomRequestMatcher(String[] publicEndpoints) {
