@@ -92,7 +92,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             throw new AuthException("Wrong Id Or Password");
 
 
-        String token = tokenService.generateToken(user);
+        String token = tokenService.generateTokens(user).toString();
         accountResponse = new AccountResponse(user);
         accountResponse.setToken(token);
 
