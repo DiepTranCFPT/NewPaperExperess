@@ -11,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 @RestController
 @SecurityRequirement(name = "api")

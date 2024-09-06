@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Article;
+import com.example.demo.entity.Type;
 import com.example.demo.entity.User;
 import com.example.demo.iservice.IArticleService;
 import com.example.demo.model.Request.ArticleRequest;
@@ -10,6 +11,9 @@ import com.example.demo.repository.IArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -49,6 +53,27 @@ public class ArticleService implements IArticleService {
         return iArticleRepository.save(article);
     }
 
+    @Override
+    public Article editArticle(String id, ArticleRequest articleRequest) {
+        Article article = iArticleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Couldn't find article'"));
+        Article updatedArticle = Article.builder()
+                .id(article.getId()) //**
+                .title(articleRequest.getTitle())
+                .type(articleRequest.getType())
+                .content(articleRequest.getContent())
+                .status(articleRequest.getStatus())
+                .publishedDate(articleRequest.getPublishedDate())
+                .titlePhoto(articleRequest.getTitlePhoto())
+                .build();
+
+        return iArticleRepository.save(updatedArticle);
+    }
+
+    @Override
+    public List<Article> filterByType(Type type) {
+        return List.of();
+    }
 
 
 }
