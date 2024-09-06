@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class JWTUtil {
 
-    @Value("${springbootwebfluxjjwt.jjwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${springbootwebfluxjjwt.jjwt.expiration}")
