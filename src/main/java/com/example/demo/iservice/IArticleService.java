@@ -6,6 +6,7 @@ import com.example.demo.model.Request.ArticleRequest;
 import com.example.demo.model.Response.ArticleResponse;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface IArticleService {
 
@@ -15,5 +16,5 @@ public interface IArticleService {
 
     Article editArticle(String id,ArticleRequest articleRequest);
 
-    List<Article> filterByType(Type type);
+    List<Article> filterByType(String typename);
 }

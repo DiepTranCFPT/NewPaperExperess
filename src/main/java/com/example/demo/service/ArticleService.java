@@ -4,6 +4,7 @@ import com.example.demo.entity.Article;
 import com.example.demo.entity.Type;
 import com.example.demo.entity.User;
 import com.example.demo.iservice.IArticleService;
+import com.example.demo.iservice.ITypeService;
 import com.example.demo.model.Request.ArticleRequest;
 import com.example.demo.model.Response.ArticleResponse;
 import com.example.demo.repository.AuthenticationRepository;
@@ -14,19 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 
 @Service
 public class ArticleService implements IArticleService {
 
-    public final IArticleRepository iArticleRepository;
-    public final AuthenticationRepository authenticationRepository;
+    private final IArticleRepository iArticleRepository;
+    private final AuthenticationRepository authenticationRepository;
+    private final ITypeService iTypeService;
 
     @Autowired
     public ArticleService(IArticleRepository iArticleRepository
-            , AuthenticationRepository authenticationRepository) {
+            , AuthenticationRepository authenticationRepository,
+                          ITypeService iTypeService) {
         this.iArticleRepository = iArticleRepository;
         this.authenticationRepository = authenticationRepository;
+        this.iTypeService = iTypeService;
     }
 
     @Override
@@ -71,9 +76,9 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public List<Article> filterByType(Type type) {
-        return List.of();
+    public List<Article> filterByType(String typename) {
+        Type type = iTypeService.getType(typename);
+        return iArticleRepository.findByType(type);
     }
-
 
 }
