@@ -48,6 +48,8 @@ public class User implements UserDetails {
     @Email(message = "Email should be valid")
     private String email;
 
+    private String refreshToken;
+
     @ManyToOne
     private Company company;
 
