@@ -1,12 +1,10 @@
 package com.example.demo.iservice;
 
 import com.example.demo.entity.Article;
-import com.example.demo.entity.Type;
 import com.example.demo.model.Request.ArticleRequest;
 import com.example.demo.model.Response.ArticleResponse;
 
 import java.util.List;
-import java.util.function.Function;
 
 public interface IArticleService {
 

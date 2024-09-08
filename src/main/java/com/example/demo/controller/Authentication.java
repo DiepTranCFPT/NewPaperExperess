@@ -2,9 +2,9 @@ package com.example.demo.controller;
 
 
 import com.example.demo.entity.User;
+import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
-import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.FirebaseService;
 import com.example.demo.service.TokenService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -26,12 +25,12 @@ import java.util.Map;
 @RequestMapping("api")
 public class Authentication {
 
-    private final AuthenticationService authenticationService;
+    private final IAuthenticationService authenticationService;
     private final FirebaseService firebaseService;
     private final TokenService tokenService;
 
     @Autowired
-    public Authentication(AuthenticationService authenticationService
+    public Authentication( IAuthenticationService authenticationService
             , FirebaseService firebaseService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.firebaseService = firebaseService;
@@ -93,12 +92,6 @@ public class Authentication {
     @PostMapping("/verify/{code}")
     public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable(value = "code") String code) {
         return ResponseEntity.ok(authenticationService.verify(code));
-    }
-
-
-    @GetMapping("/test/{id}")
-    public ResponseEntity<BufferedImage> test(@RequestParam(value = "id") String id) {
-        return ResponseEntity.ok(authenticationService.getimg(id));
     }
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody Map<String, String> request) {
