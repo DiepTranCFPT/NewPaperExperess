@@ -135,7 +135,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .orElseThrow(() -> new AuthException("Account not found with email: " + email));
 
         VerifyCode = OtherFunctions.generateRandomNumberString();
-
         try {
             emailService.sendMailVerification("Verifycode forgot account",
                     email,
