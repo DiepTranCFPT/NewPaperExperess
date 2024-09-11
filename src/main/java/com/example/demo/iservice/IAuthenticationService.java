@@ -4,6 +4,7 @@ import com.example.demo.entity.User;
 import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 
+
 public interface IAuthenticationService {
     User register(RegisterRequest registerRequest);
     boolean verify(String verificationCode);
