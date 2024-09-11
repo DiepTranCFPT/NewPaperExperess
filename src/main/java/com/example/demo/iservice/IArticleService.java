@@ -14,5 +14,12 @@ public interface IArticleService {
 
     Article editArticle(String id,ArticleRequest articleRequest);
 
-    List<Article> filterByType(String typename);
+    List<String> filterByType(String typename);
+
+    /**
+     * Search for Key (content, author, date, type)
+     * @param typename
+     * @return list ID
+     */
+    List<String> searchByKey (String typename);
 }

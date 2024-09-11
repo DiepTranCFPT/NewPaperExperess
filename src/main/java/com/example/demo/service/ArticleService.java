@@ -34,6 +34,7 @@ public class ArticleService implements IArticleService {
         this.iTypeService = iTypeService;
     }
 
+
     @Override
     public ArticleResponse readArticle(String id) {
         return iArticleRepository.findById(id).
@@ -75,10 +76,21 @@ public class ArticleService implements IArticleService {
         return iArticleRepository.save(updatedArticle);
     }
 
+
+
+
     @Override
-    public List<Article> filterByType(String typename) {
-        Type type = iTypeService.getType(typename);
-        return iArticleRepository.findByType(type);
+    public List<String> filterByType(String typename) {
+        return List.copyOf(iArticleRepository.
+                findByType(iTypeService.getType(typename))
+                .stream().map(Article::getId)
+                .toList());
+    }
+
+    @Override
+    public List<String> searchByKey(String typename) {
+
+        return List.of();
     }
 
 }
