@@ -17,7 +17,7 @@ public interface IArticleService {
     List<String> filterByType(String typename);
 
     /**
-     * Search for Key (content, author, date, type)
+     * Search for Key (content, author, type)
      * @param typename
      * @return list ID
      */

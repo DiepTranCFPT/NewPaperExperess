@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.Article;
 import com.example.demo.entity.Type;
 import com.example.demo.entity.User;
+import com.example.demo.infor.Role;
 import com.example.demo.iservice.IArticleService;
 import com.example.demo.iservice.ITypeService;
 import com.example.demo.model.Request.ArticleRequest;
@@ -89,7 +90,7 @@ public class ArticleService implements IArticleService {
 
     @Override
     public List<String> searchByKey(String typename) {
-
+        List<User> users = authenticationRepository.findByNameContainingAndRole(typename, Role.AUTHOR);
         return List.of();
     }
 
