@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Filtration {
-    public static <T> List<String> getListString(List<T> obj) {
 
+
+
+    public static <T> List<String> getListString(List<T> obj) {
         if (obj.isEmpty()) return new ArrayList<>();
         Class<?> clazz = obj.get(0).getClass();
-
         return obj.stream()
                 .map(item -> {
                     try {
