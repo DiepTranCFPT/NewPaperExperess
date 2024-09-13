@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -65,13 +66,13 @@ public class SecurityConfig  {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(new CustomRequestMatcher(PUBLIC_ENDPOINTS_METHOD)).permitAll()
                         .anyRequest().authenticated()
-                );
+                )
 
-//                .oauth2ResourceServer(oauth2 -> oauth2
-//                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-//                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-//                        .authenticationEntryPoint(authenticationHandler))
-//                .csrf(AbstractHttpConfigurer::disable);
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(authenticationHandler))
+                .csrf(AbstractHttpConfigurer::disable);
 
        httpSecurity.addFilterBefore(new Filter(PUBLIC_ENDPOINTS, PUBLIC_ENDPOINTS_METHOD), UsernamePasswordAuthenticationFilter.class);
 

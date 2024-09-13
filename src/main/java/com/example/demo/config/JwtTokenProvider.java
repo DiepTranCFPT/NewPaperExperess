@@ -8,7 +8,7 @@
 //@Component
 //@Slf4j
 //public class JwtTokenProvider {
-//    private final String JWT_SECRET = "your-secret-key"; // Thay thế bằng secret key của bạn
+//    private final String JWT_SECRET =
 //    private final long JWT_EXPIRATION = 604800000L; // 7 ngày
 //
 //    public String generateToken(User userDetails) {
