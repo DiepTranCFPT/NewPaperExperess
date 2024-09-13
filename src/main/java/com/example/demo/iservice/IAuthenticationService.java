@@ -6,16 +6,48 @@ import com.example.demo.model.Response.AccountResponse;
 
 
 public interface IAuthenticationService {
-    User register(RegisterRequest registerRequest);
-    boolean verify(String verificationCode);
-    AccountResponse login(LoginRequest loginRequest);
-    AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest);
-    void forgotPassword(String email);
-    boolean resetPassword(ResetPasswordRequest resetPasswordRequest);
-    User findById(String id);
-    User registerforGoogle(RegisterforGoogle GoogleAccount);
-    User changePassword(String newPassword);
-    boolean verifyToforgot(String verificationCode);
-    boolean reportUser(ReportRequest reportRequest);
+    default User register(RegisterRequest registerRequest) {
+        return null;
+    }
+
+    default boolean verify(String verificationCode) {
+        return false;
+    }
+
+    default AccountResponse login(LoginRequest loginRequest) {
+        return null;
+    }
+
+    default AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
+        return null;
+    }
+
+    default void forgotPassword(String email) {
+
+    }
+
+    default boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        return false;
+    }
+
+    default User findById(String id) {
+        return null;
+    }
+
+    default User registerforGoogle(RegisterforGoogle GoogleAccount) {
+        return null;
+    }
+
+    default User changePassword(String newPassword) {
+        return null;
+    }
+
+    default boolean verifyToforgot(String verificationCode) {
+        return false;
+    }
+
+    default boolean reportUser(ReportRequest reportRequest) {
+        return false;
+    }
 
 }

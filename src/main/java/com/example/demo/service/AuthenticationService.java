@@ -238,3 +238,17 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         return report != null;
     }
 }
+
+
+
+class ActionAuthentication implements IAuthenticationService{
+    @Override
+    public boolean verify(String verificationCode) {
+        return IAuthenticationService.super.verify(verificationCode);
+    }
+
+    @Override
+    public boolean verifyToforgot(String verificationCode) {
+        return IAuthenticationService.super.verifyToforgot(verificationCode);
+    }
+}
