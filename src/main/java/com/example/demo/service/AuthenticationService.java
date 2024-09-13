@@ -77,7 +77,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         return user;
     }
 
-    @Override
     public boolean verify(String verificationCode) {
         if (verificationCode.equals(VerifyCode)) {
             authenticationRepository.save(user);
@@ -236,5 +235,21 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                .user(user)
                .build());
         return report != null;
+    }
+}
+
+
+
+
+
+class ActionAuthentication implements IAuthenticationService{
+    @Override
+    public boolean verify(String verificationCode) {
+        return IAuthenticationService.super.verify(verificationCode);
+    }
+
+    @Override
+    public boolean verifyToforgot(String verificationCode) {
+        return IAuthenticationService.super.verifyToforgot(verificationCode);
     }
 }
