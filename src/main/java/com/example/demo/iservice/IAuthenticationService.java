@@ -16,4 +16,6 @@ public interface IAuthenticationService {
     User registerforGoogle(RegisterforGoogle GoogleAccount);
     User changePassword(String newPassword);
     boolean verifyToforgot(String verificationCode);
+    boolean reportUser(ReportRequest reportRequest);
+
 }

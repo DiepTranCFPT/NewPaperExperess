@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Report;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AuthException;
 import com.example.demo.infor.Role;
@@ -8,6 +9,7 @@ import com.example.demo.model.Request.*;
 import com.example.demo.model.Response.AccountResponse;
 import com.example.demo.repository.AuthenticationRepository;
 
+import com.example.demo.repository.IReportRepository;
 import com.example.demo.utils.OtherFunctions;
 import com.example.demo.utils.SendMailUtils;
 import jakarta.mail.MessagingException;
@@ -28,17 +30,21 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final IReportRepository reportRepository;
     private String VerifyCode;
     private User user;
+
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
                                  TokenService tokenService,
                                  PasswordEncoder passwordEncoder,
-                                 EmailService emailService) {
+                                 EmailService emailService,
+                                 IReportRepository reportRepository) {
         this.authenticationRepository = authenticationRepository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.reportRepository = reportRepository;
     }
 
     @Transactional
@@ -56,8 +62,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .build();
-        try {
 
+        try {
             user.setAvata(OtherFunctions.UploadImg("avatadf.jpg"));
 
             emailService.sendMailVerification("Verifycode Regis account",
@@ -158,6 +164,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         return verificationCode.equals(VerifyCode);
     }
 
+
+
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
@@ -216,5 +224,17 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             throw new UsernameNotFoundException(username);
         }
         return user;
+    }
+
+
+    @Override
+    public boolean reportUser(ReportRequest reportRequest) {
+        user = authenticationRepository.findById(reportRequest.getId()).orElseThrow(() ->
+                new RuntimeException("Account not found with id: " + reportRequest.getId()));
+       Report report = reportRepository.save(Report.builder()
+               .Content(reportRequest.getContent())
+               .user(user)
+               .build());
+        return report != null;
     }
 }

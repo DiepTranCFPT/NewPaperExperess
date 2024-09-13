@@ -42,5 +42,8 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Rating> ratings;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private List<Report> reports;
+
 }
 
