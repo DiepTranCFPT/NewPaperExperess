@@ -17,11 +17,9 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String status;
     private String createdDate;
     private int rating;
-    private boolean isPeerReview;
-    private String comments;
+    private boolean isPeerReview; // co phai danh gia ngang hang k?
 
     @ManyToOne
     private Article article;

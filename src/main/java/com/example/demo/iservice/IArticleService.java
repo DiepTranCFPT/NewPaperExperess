@@ -22,4 +22,7 @@ public interface IArticleService {
      * @return list ID
      */
     List<String> searchByKey (String typename);
+
+    Article findById(String id);
+
 }

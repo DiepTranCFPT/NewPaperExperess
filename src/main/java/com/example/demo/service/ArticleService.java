@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-
 @Service
 public class ArticleService implements IArticleService {
 
@@ -76,8 +75,6 @@ public class ArticleService implements IArticleService {
     }
 
 
-
-
     @Override
     public List<String> filterByType(String typename) {
         return List.copyOf(iArticleRepository.
@@ -90,6 +87,11 @@ public class ArticleService implements IArticleService {
     public List<String> searchByKey(String typename) {
         List<User> users = authenticationRepository.findByNameContainingAndRole(typename, Role.AUTHOR);
         return Filtration.getListString(users);
+    }
+
+    @Override
+    public Article findById(String id) {
+        return iArticleRepository.findById(id).orElseThrow(() -> new RuntimeException("ID Not found"));
     }
 
 }
