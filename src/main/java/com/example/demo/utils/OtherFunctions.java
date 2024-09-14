@@ -20,6 +20,7 @@ public class OtherFunctions {
             return inputStream.readAllBytes();
         }
     }
+
     public static BufferedImage convertByteArrayToImage(byte[] imageData) throws IOException {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(imageData)) {
             return ImageIO.read(bais);
@@ -34,12 +35,9 @@ public class OtherFunctions {
         return String.format("%06d", new Random().nextInt(100000));
     }
 
-    public static int rating(List<Rating> articles) {
-        int rating = 0;
-        for (Rating r : articles) {
-            rating += r.getRating();
-        }
-        return rating / articles.size();
+    public static int ratingMedium(List<Rating> articles) {
+        return (articles == null || articles.isEmpty()) ? 0 : articles.stream()
+                        .mapToInt(Rating::getRating).sum() / articles.size();
     }
 
 }
