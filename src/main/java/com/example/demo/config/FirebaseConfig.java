@@ -14,19 +14,17 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
-        // Check if FirebaseApp is already initialized
         if (FirebaseApp.getApps().isEmpty()) {
             FileInputStream serviceAccount =
                     new FileInputStream("src/main/resources/firebase-admin.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://newsprojectexpress.firebaseio.com")  // Ensure correct URL format
+                    .setDatabaseUrl("https://newsprojectexpress.firebaseio.com")
                     .build();
 
             return FirebaseApp.initializeApp(options);
         } else {
-            // Return the existing FirebaseApp instance
             return FirebaseApp.getInstance();
         }
     }

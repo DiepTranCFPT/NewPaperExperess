@@ -35,7 +35,7 @@ public class ArticleResponse {
         this.type = article.getType();
         this.comments = article.getComments();
         this.mediaList = article.getMediaList();
-        this.ratings = OtherFunctions.rating(article.getRatings());
+        this.ratings = OtherFunctions.ratingMedium(article.getRatings());
     }
 
 
