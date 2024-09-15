@@ -37,8 +37,5 @@ public class ArticleResponse {
         this.mediaList = article.getMediaList();
         this.ratings = OtherFunctions.ratingMedium(article.getRatings());
     }
-
-
-
 }
 

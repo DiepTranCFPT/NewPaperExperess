@@ -22,5 +22,4 @@ public interface IRatingService {
     }
 
     Rating saveRating(RatingRequest rating);
-
 }
