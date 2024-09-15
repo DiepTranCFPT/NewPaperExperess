@@ -32,11 +32,25 @@ public class ArticleService implements IArticleService {
     }
 
 
+    public void Access(Article article) {
+        int count = setAccess(article.getAccess());
+        article.setAccess(count);
+        iArticleRepository.save(article);
+    }
+
     @Override
     public ArticleResponse readArticle(String id) {
-        return iArticleRepository.findById(id).
-                map(ArticleResponse::new).orElseThrow(() ->
-                        new RuntimeException("Could not find article"));
+        Article article = iArticleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find article"));
+
+        if (article != null) {
+            Access(article);
+            return new ArticleResponse(article);
+        }
+        throw new RuntimeException("Could not find article");
+//        return iArticleRepository.findById(id).
+//                map(ArticleResponse::new).orElseThrow(() ->
+//                        new RuntimeException("Could not find article"));
     }
 
     @Override
@@ -91,7 +105,9 @@ public class ArticleService implements IArticleService {
 
     @Override
     public Article findById(String id) {
-        return iArticleRepository.findById(id).orElseThrow(() -> new RuntimeException("ID Not found"));
+        return iArticleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ID Not found"));
     }
+
 
 }

@@ -45,5 +45,7 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Report> reports;
 
+    private int access; // tinh luoc tuy cap vao bai viet
+
 }
 

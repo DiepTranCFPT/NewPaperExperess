@@ -25,4 +25,8 @@ public interface IArticleService {
 
     Article findById(String id);
 
+    default int setAccess(int access){
+        return ++access;
+    }
+
 }

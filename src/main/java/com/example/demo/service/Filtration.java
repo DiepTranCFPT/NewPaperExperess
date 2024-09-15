@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Article;
 import com.example.demo.iservice.IArticleService;
 import com.example.demo.iservice.IAuthenticationService;
 import com.example.demo.iservice.IFollowService;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 /**
  * cac chuc nang loc
@@ -42,6 +42,22 @@ public class Filtration {
     }
 
     // lay danh sach bai viet theo ngay tao
+
+    /**
+     * - loc theo ngay
+     * - loc theo tuong tac ( cmt , vote,...)
+     * @param publishedDate
+     * @return
+     */
+
+    public List<String> getArticleListForDate(String publishedDate){
+        List<Article> articles = iArticleRepository.findAllByPublishedDate(publishedDate);
+
+        return null;
+    }
+
+
+
     // lay danh sach bai viet theo tac gia
     // lay danh sach bai viet theo danh gia
     // lay danh sach bai viet theo tuong tac

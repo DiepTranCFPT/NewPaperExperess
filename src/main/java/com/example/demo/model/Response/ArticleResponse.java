@@ -21,6 +21,8 @@ public class ArticleResponse {
     private List<Comment> comments;
     private List<Media> mediaList;
     private int ratings;
+    private int access;
+
 
 
     public ArticleResponse(Article article){
@@ -36,6 +38,7 @@ public class ArticleResponse {
         this.comments = article.getComments();
         this.mediaList = article.getMediaList();
         this.ratings = OtherFunctions.ratingMedium(article.getRatings());
+        this.access = article.getAccess();
     }
 }
 
