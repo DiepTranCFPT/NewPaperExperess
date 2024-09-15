@@ -28,4 +28,6 @@ public interface IFollowRepository extends JpaRepository<Follows, String> {
                 .stream().map(User::getId)
                 .toList());
     }
+
+    Follows findByFollower_IdAndFollowing_Id(String followerId, String followingId);
 }

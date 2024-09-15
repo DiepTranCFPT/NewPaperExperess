@@ -18,7 +18,7 @@ public interface IAuthenticationService {
 
     default boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {return false;}
 
-    default User findById(String id) {return null;}
+    User findById(String id);
 
     default User registerforGoogle(RegisterforGoogle GoogleAccount) {return null;}
 
