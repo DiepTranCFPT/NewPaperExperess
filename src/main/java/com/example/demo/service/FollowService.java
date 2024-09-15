@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FollowService implements IFollowService {
@@ -60,16 +59,13 @@ public class FollowService implements IFollowService {
     }
 
     @Override
-    public List<UserReponseFl> getFollow(String userID) {
-        User user = authenticationService.findById(userID);
-        if (user != null) {
-            List<Follows> followsList = user.getFollowingUsers();
-            return followsList.stream().map(follows ->
-                            new UserReponseFl(follows.getFollowing()))
-                    .collect(Collectors.toList());
-        }
-        throw new RuntimeException("user not found");
+    public List<UserReponseFl> getFollows(String userID) {
+        return iFollowRepository.getListfollowByUser(userID,
+                authenticationService::findById);
     }
+
+
+
 
 
 }
