@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public interface IFollowRepository extends JpaRepository<Follows, String> {
 
 
-    List<User> findAllByFollower_Id(String followerId);
+//    List<User> findAllByFollower_Id(String followerId);
 
 
     default List<UserReponseFl> getListfollowByUser(String followerId,
@@ -31,4 +31,6 @@ public interface IFollowRepository extends JpaRepository<Follows, String> {
     }
 
     Follows findByFollower_IdAndFollowing_Id(String followerId, String followingId);
+
+
 }

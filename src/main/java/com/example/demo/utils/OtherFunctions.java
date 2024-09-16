@@ -38,6 +38,7 @@ public class OtherFunctions {
     public static int ratingMedium(List<Rating> articles) {
         return (articles == null || articles.isEmpty()) ? 0 : articles.stream()
                         .mapToInt(Rating::getRating).sum() / articles.size();
+
     }
 
 }

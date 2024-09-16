@@ -11,4 +11,5 @@ public interface IArticleRepository extends JpaRepository<Article,String> {
     List<Article> findByType(Type type);
     List<Article> findByAuthor_NameContaining(@NotNull String author);
     List<Article> findByContentContaining(@NotNull String content);
+    List<Article> findAllByPublishedDate(@NotNull String publishedDate);
 }
