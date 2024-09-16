@@ -1,6 +1,5 @@
 package com.experess.news.model.Response;
 
-import com.example.demo.entity.*;
 import com.experess.news.entity.Article;
 import com.experess.news.entity.Comment;
 import com.experess.news.entity.Media;
