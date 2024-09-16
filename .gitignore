@@ -19,6 +19,8 @@ target/
 *.iml
 *.ipr
 src/main/resources/firebase-admin.json
+src/test/**
+src/test
 
 ### NetBeans ###
 /nbproject/private/
