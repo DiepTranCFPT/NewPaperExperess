@@ -25,6 +25,12 @@ public interface IArticleService {
 
     Article findById(String id);
 
+
+    /**
+     * so luong truy cap +1 neu nguoi dung xem bai viet
+     * @param access {@link Integer access for Article}
+     * @return {@link Integer access}
+     */
     default int setAccess(int access){
         return ++access;
     }

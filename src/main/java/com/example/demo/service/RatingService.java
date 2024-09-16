@@ -33,4 +33,13 @@ public class RatingService implements IRatingService {
                authenticationService::findById,
                articleService::findById));
     }
+
+
+
+
+
+
+
+
+
 }

@@ -48,9 +48,6 @@ public class ArticleService implements IArticleService {
             return new ArticleResponse(article);
         }
         throw new RuntimeException("Could not find article");
-//        return iArticleRepository.findById(id).
-//                map(ArticleResponse::new).orElseThrow(() ->
-//                        new RuntimeException("Could not find article"));
     }
 
     @Override
@@ -108,6 +105,10 @@ public class ArticleService implements IArticleService {
         return iArticleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID Not found"));
     }
+
+
+
+
 
 
 }
