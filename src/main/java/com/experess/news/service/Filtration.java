@@ -6,6 +6,7 @@ import com.experess.news.infor.Role;
 import com.experess.news.iservice.IArticleService;
 import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.iservice.IFollowService;
+import com.experess.news.model.Response.ArticleResponse;
 import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IFollowRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * cac chuc nang loc
@@ -60,6 +62,12 @@ public class Filtration {
     // sort theo muc do anh huong + danh gia cac bai viet
 
 
+    /**
+     * sort by follow
+     *
+     * @param name
+     * @return
+     */
     public List<String> getUserListByName(@NotNull String name) {
 
         List<User> getUser = authenticationRepository.findByNameContainingAndRole(name, Role.AUTHOR);
@@ -76,12 +84,52 @@ public class Filtration {
     // lay danh sach bai viet theo danh gia
 
 
+    /**
+     * sort by rating
+     *
+     * @param articleList
+     * @return
+     */
+    public List<ArticleResponse> getArticleListByRating(@NotNull List<ArticleResponse> articleList) {
+
+        Comparator<ArticleResponse> sortByRating = Comparator.comparingInt(ArticleResponse::getRatings);
+        articleList.sort(sortByRating);
+
+        return articleList;
+    }
+
+
     // lay danh sach bai viet theo tuong tac
+
+
     // lay danh sach bai moi nhat
     // lay danh sach bai viet theo chu de va theo ca ys tren
     // lay danh sach bai viet theo key
     // lay danh sach bai viet theo bao cao
     // lay danh sach bai viet theo
     // lay danh sach bai viet theo
+
+
+    // DE XUAT
+    // xem 1 bai viet voi noi dung noi ve 1 "chu de" tuong tu
+
+    public List<ArticleResponse> A(@NotNull ArticleResponse articleResponse) {
+
+        List<Article> articles = iArticleRepository.findByTitleContaining(articleResponse.getTitle());
+        User author = authenticationRepository.findById(articleResponse.getAuthor())
+                .orElseThrow((() -> new RuntimeException("No author")));
+
+
+
+
+        return null;
+    }
+
+
+    // nhung tac gia co suc anh huong va viet ve chu de tuong tu
+    // tac gia co ten tuong tu
+    // tac gia va bai viet ma nhung nguoi ban co the biet
+    //
+
 
 }
