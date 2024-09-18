@@ -1,4 +1,4 @@
-package com.experess.news.model.Response;
+package com.experess.news.model.Response.articlereponse;
 
 import com.experess.news.entity.Article;
 import com.experess.news.entity.Comment;
@@ -10,8 +10,11 @@ import lombok.Data;
 import java.util.List;
 
 
+/**
+ * su dung khi xem bai viet
+ */
 @Data
-public class ArticleResponse {
+public class ArticleResponseDetails {
     private String id;
     private String title;
     private String content;
@@ -28,7 +31,7 @@ public class ArticleResponse {
 
 
 
-    public ArticleResponse(Article article){
+    public ArticleResponseDetails(Article article){
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();

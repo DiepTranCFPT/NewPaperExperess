@@ -2,13 +2,13 @@ package com.experess.news.iservice;
 
 import com.experess.news.entity.Article;
 import com.experess.news.model.Request.ArticleRequest;
-import com.experess.news.model.Response.ArticleResponse;
+import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 
 import java.util.List;
 
 public interface IArticleService {
 
-    ArticleResponse readArticle(String id);
+    ArticleResponseDetails readArticle(String id);
 
     Article writeArticle(ArticleRequest articleRequest);
 

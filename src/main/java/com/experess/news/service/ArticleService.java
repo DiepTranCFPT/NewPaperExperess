@@ -5,7 +5,7 @@ import com.experess.news.entity.User;
 import com.experess.news.iservice.IArticleService;
 import com.experess.news.iservice.ITypeService;
 import com.experess.news.model.Request.ArticleRequest;
-import com.experess.news.model.Response.ArticleResponse;
+import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.IArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +39,13 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public ArticleResponse readArticle(String id) {
+    public ArticleResponseDetails readArticle(String id) {
         Article article = iArticleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find article"));
 
         if (article != null) {
             Access(article);
-            return new ArticleResponse(article);
+            return new ArticleResponseDetails(article);
         }
         throw new RuntimeException("Could not find article");
     }
