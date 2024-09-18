@@ -6,7 +6,7 @@ import com.experess.news.infor.Role;
 import com.experess.news.iservice.IArticleService;
 import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.iservice.IFollowService;
-import com.experess.news.model.Response.ArticleResponse;
+import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IFollowRepository;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * cac chuc nang loc
@@ -90,9 +89,9 @@ public class Filtration {
      * @param articleList
      * @return
      */
-    public List<ArticleResponse> getArticleListByRating(@NotNull List<ArticleResponse> articleList) {
+    public List<ArticleResponseDetails> getArticleListByRating(@NotNull List<ArticleResponseDetails> articleList) {
 
-        Comparator<ArticleResponse> sortByRating = Comparator.comparingInt(ArticleResponse::getRatings);
+        Comparator<ArticleResponseDetails> sortByRating = Comparator.comparingInt(ArticleResponseDetails::getRatings);
         articleList.sort(sortByRating);
 
         return articleList;
@@ -113,11 +112,15 @@ public class Filtration {
     // DE XUAT
     // xem 1 bai viet voi noi dung noi ve 1 "chu de" tuong tu
 
-    public List<ArticleResponse> A(@NotNull ArticleResponse articleResponse) {
+    public List<ArticleResponseDetails> A(@NotNull ArticleResponseDetails articleResponse) {
 
-        List<Article> articles = iArticleRepository.findByTitleContaining(articleResponse.getTitle());
+        List<Article> articles = iArticleRepository.findByTitleContaining(articleResponse.getTitle()); // lay cac bai viet co title tuong tu bai viet dang xem
         User author = authenticationRepository.findById(articleResponse.getAuthor())
-                .orElseThrow((() -> new RuntimeException("No author")));
+                .orElseThrow((() -> new RuntimeException("No author"))); // lay ten tac gia cua bai viet dang xem
+
+        List<Article> findbyAuthor = iArticleRepository.findByAuthor_NameContaining(author.getName()); // tim cac bai viet co author nam tuong duong.
+
+
 
 
 
