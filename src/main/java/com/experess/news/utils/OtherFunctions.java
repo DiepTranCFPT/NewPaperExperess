@@ -89,4 +89,11 @@ public class OtherFunctions {
         return List.copyOf(list.stream().map(method).toList());
     }
 
+    public static <T, M> List<M> getListObject(List<T> list,
+                                               Function<T, M> method) {
+        return list.stream()
+                .map(method)
+                .toList();
+    }
+
 }
