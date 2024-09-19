@@ -1,8 +1,6 @@
 package com.experess.news.model.Response.articlereponse;
 
-import com.experess.news.entity.Article;
 import com.experess.news.entity.Type;
-import com.experess.news.utils.OtherFunctions;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,15 +21,15 @@ public class ArticleResponseSum {
     private int ratings;
     private int access;
 
-    public ArticleResponseSum(Article article){
+    public ArticleResponseSum(ArticleResponseDetails article){
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.publishedDate = article.getPublishedDate();
         this.createdDate = article.getCreatedDate();
-        this.author = article.getAuthor().getId();
+        this.author = article.getAuthor();
         this.type = article.getType();
-        this.ratings = OtherFunctions.ratingMedium(article.getRatings());
+        this.ratings = article.getRatings();
         this.access = article.getAccess();
     }
 
