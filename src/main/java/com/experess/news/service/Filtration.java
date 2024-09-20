@@ -1,6 +1,7 @@
 package com.experess.news.service;
 
 import com.experess.news.entity.Article;
+import com.experess.news.entity.Follows;
 import com.experess.news.entity.User;
 import com.experess.news.infor.Role;
 import com.experess.news.iservice.IArticleService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -132,33 +134,62 @@ public class Filtration {
 
         articles.addAll(articleListInDate);
 
-        Comparator<Article> sortListArticle = Comparator
-                .comparingInt(o -> calculateTitleSimilarity(articleResponse.getTitle())) // Tương đồng title
-                .reversed() // Từ nhiều đến ít tương đồng
-                .thenComparing(Article::getRatings, Comparator.reverseOrder()) // Lược rating từ cao đến thấp
-                .thenComparing(Article::getPublishedDate, Comparator.reverseOrder()); // Ngày từ mới đến cũ
-
-        List<Article> sortedArticles = articles.stream()
-                .distinct() // Loại bỏ các bài viết trùng lặp nếu có
-                .sorted(sortListArticle)
-                .collect(Collectors.toList());
-
-        // Chuyển đổi danh sách Article thành ArticleResponseSum
-        return OtherFunctions.getListObject(sortedArticles, ArticleResponseSum::new);
+        ///
+        ///
+        ///
 
 
-    }
-
-    private int calculateTitleSimilarity(String title1, String title2) {
-        // Implement your similarity calculation here
-        // For example, you can use Levenshtein distance or another algorithm
-        return 0; // Dummy implementation
+        return null;
     }
 
 
     // nhung tac gia co suc anh huong va viet ve chu de tuong tu
+    public List<ArticleResponseSum> getListArticleBySameTitle(@NotNull String articleResponseTitle) {
+
+        List<Article> articles = iArticleRepository.findByTitleContaining(articleResponseTitle); // lay cac bai viet co title tuong tu bai viet dang xem
+
+        List<ArticleResponseSum> converList = OtherFunctions.getListObject(articles, ArticleResponseSum::new);
+
+        Comparator<ArticleResponseSum> sortByRating = Comparator.comparingInt(ArticleResponseSum::getRatings).reversed();
+        converList.sort(sortByRating);
+
+        return converList;
+    }
     // tac gia co ten tuong tu
+
+    public List<ArticleResponseSum> getListArticleByAuthorName(@NotNull String nameAuthor) {
+
+        User author = authenticationRepository.findById(nameAuthor)
+                .orElseThrow((() -> new RuntimeException("author not found")));
+        // lay ten tac gia cua bai viet dang xem
+        if (author != null)
+            throw new RuntimeException("author not found");
+
+        List<Article> articles = iArticleRepository.findByAuthor_NameContaining(author.getName());
+
+        List<ArticleResponseSum> converList = OtherFunctions.getListObject(articles, ArticleResponseSum::new);
+
+        Comparator<ArticleResponseSum> sortByRating = Comparator.comparingInt(ArticleResponseSum::getRatings).reversed();
+        converList.sort(sortByRating);
+        return converList;
+    }
+
+
     // tac gia va bai viet ma nhung nguoi ban co the biet
+
+    public List<ArticleResponseSum> getListAuthorFollow(String idUser){
+        User user = authenticationRepository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+
+        List<Follows> follows = user.getFollowers();
+
+        List<User> followUser = List.copyOf(follows.stream().map(Follows::getFollowing).toList());
+
+
+        return null;
+    }
+
+
     //
 
 
