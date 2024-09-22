@@ -3,6 +3,7 @@ package com.experess.news.service;
 import com.experess.news.entity.Report;
 import com.experess.news.entity.User;
 import com.experess.news.exception.AuthException;
+import com.experess.news.infor.Gender;
 import com.experess.news.infor.Role;
 import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.model.Response.AccountResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -61,6 +63,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .isEnable(true)
                 .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
+                .gender(Gender.MALE)
                 .build();
 
         try {
@@ -89,6 +92,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     @Override
     @Transactional
     public AccountResponse login(LoginRequest loginRequest) {
+
         user = authenticationRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
         AccountResponse accountResponse;
@@ -164,7 +168,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     }
 
 
-
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
@@ -205,7 +208,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         return user;
     }
 
-    public BufferedImage getimg(String id){
+    public BufferedImage getimg(String id) {
         user = authenticationRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Account not found with id: " + id));
         try {
@@ -230,11 +233,29 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     public boolean reportUser(ReportRequest reportRequest) {
         user = authenticationRepository.findById(reportRequest.getId()).orElseThrow(() ->
                 new RuntimeException("Account not found with id: " + reportRequest.getId()));
-       Report report = reportRepository.save(Report.builder()
-               .Content(reportRequest.getContent())
-               .user(user)
-               .build());
+        Report report = reportRepository.save(Report.builder()
+                .Content(reportRequest.getContent())
+                .user(user)
+                .build());
         return report != null;
+    }
+
+    @Override
+    public boolean editUser(UserRequest userRequest) {
+        User user = authenticationRepository.findById(userRequest.getId())
+                .orElseThrow(() -> new RuntimeException(""));
+        if (user == null) return false;
+
+        user.setEmail(userRequest.getEmail());
+        user.setName(userRequest.getName());
+        user.setPhone(userRequest.getPhone());
+        user.setGender(userRequest.isGender() ? Gender.MALE : Gender.FEMALE);
+        user.setAvata(userRequest.getAvata() != null ? userRequest.getAvata() : user.getAvata());
+        user.setDescription(userRequest.getDescribe());
+        user.setAddress(userRequest.getAddress());
+
+        authenticationRepository.save(user);
+        return true;
     }
 }
 

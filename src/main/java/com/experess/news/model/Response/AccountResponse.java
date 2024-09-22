@@ -1,7 +1,9 @@
 package com.experess.news.model.Response;
 
 import com.experess.news.entity.User;
+import com.experess.news.infor.Gender;
 import com.experess.news.infor.Role;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,9 @@ public class AccountResponse {
     private String DataActivate;
     private String phone;
     private String token;
+    private Gender gender;
+    private String describe;
+    private String address;
 
     public AccountResponse(User user) {
         this.id = user.getId();
@@ -27,6 +32,9 @@ public class AccountResponse {
         this.role = user.getRole();
         this.DataActivate = user.getDataActivate();
         this.phone = user.getPhone();
+        this.gender = user.getGender();
+        this.describe = user.getDescription();
+        this.address = user.getAddress();
     }
 }
 

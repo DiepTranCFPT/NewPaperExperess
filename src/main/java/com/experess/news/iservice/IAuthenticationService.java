@@ -28,4 +28,6 @@ public interface IAuthenticationService {
 
     default boolean reportUser(ReportRequest reportRequest) {return false;}
 
+    boolean editUser(UserRequest user);
+
 }
