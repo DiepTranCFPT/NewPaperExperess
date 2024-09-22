@@ -94,6 +94,14 @@ public class User implements UserDetails {
 
     private String uid;
 
+    @Column(length = 150)
+    @Size(max = 150, message = "Describe cannot exceed 150 characters")
+    private String description;
+
+    private String address;
+
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

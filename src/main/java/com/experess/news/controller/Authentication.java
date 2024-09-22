@@ -102,4 +102,10 @@ public class Authentication {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to revoke token");
         }
     }
+
+    @PutMapping("/edit-profile")
+    public ResponseEntity<?> editAccount(@NotNull @RequestBody UserRequest request){
+        boolean isEdit = authenticationService.editUser(request);
+        return ResponseEntity.ok(isEdit);
+    }
 }

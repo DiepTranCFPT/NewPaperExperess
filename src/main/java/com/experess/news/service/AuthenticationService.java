@@ -241,16 +241,21 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     }
 
     @Override
-    public User editUser(UserRequest userRequest) {
-        User user = User.builder()
-                .id(userRequest.getId())
-                .avata(userRequest.getAvata())
-                .email(userRequest.getEmail())
-                .phone(userRequest.getPhone())
-                .name(userRequest.getName())
-                .gender(userRequest.isGender() ? Gender.MALE : Gender.FEMALE)
-                .build();
-        return authenticationRepository.save(user);
+    public boolean editUser(UserRequest userRequest) {
+        User user = authenticationRepository.findById(userRequest.getId())
+                .orElseThrow(() -> new RuntimeException(""));
+        if (user == null) return false;
+
+        user.setEmail(userRequest.getEmail());
+        user.setName(userRequest.getName());
+        user.setPhone(userRequest.getPhone());
+        user.setGender(userRequest.isGender() ? Gender.MALE : Gender.FEMALE);
+        user.setAvata(userRequest.getAvata() != null ? userRequest.getAvata() : user.getAvata());
+        user.setDescription(userRequest.getDescribe());
+        user.setAddress(userRequest.getAddress());
+
+        authenticationRepository.save(user);
+        return true;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.experess.news.model.Request;
 
+import com.experess.news.infor.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,5 +26,10 @@ public class UserRequest {
     private boolean isGender; // true if MALE ,f= FEMALE
 
     private byte[] avata;
+
+    private String address;
+
+    private String describe;
+
 
 }

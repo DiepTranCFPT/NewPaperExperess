@@ -43,6 +43,7 @@ public class SecurityConfig  {
             "/api/login",
             "/api/forgot-password",
             "/api/test/**",
+            "/api/edit-profile/**"
     };
 
     private final String[] PUBLIC_ENDPOINTS_METHOD = {

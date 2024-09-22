@@ -14,7 +14,7 @@ public class CorConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173")
                 .allowedHeaders("*")
                 .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Methods","Access-Control-Allow-Headers")
-                .allowedMethods("*")
+                .allowedMethods("PUT", "POST", "GET", "DELETE")
                 .maxAge(1440000);
     }
 
