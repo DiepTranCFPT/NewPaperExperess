@@ -1,6 +1,7 @@
 package com.experess.news.entity;
 
 
+import com.experess.news.infor.Gender;
 import com.experess.news.infor.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -73,6 +74,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follows> followers;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
+
+
     private boolean isEnable;
 
     @Lob
@@ -81,6 +86,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private String DataActivate;
 

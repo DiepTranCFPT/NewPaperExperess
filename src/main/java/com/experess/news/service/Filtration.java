@@ -127,8 +127,8 @@ public class Filtration {
             articles.addAll(iArticleRepository.findByAuthor_NameContaining(author.getName())); // tim bai viet co tac gia ten tuong duong
 
 
-        List<Article> articleListbyRating = iArticleRepository.
-                findByRatingsBetween(articleResponse.getRatings(), 5); // lay danh sach cac bai viet co luoc danh gia cao.
+//        List<Article> articleListbyRating = iArticleRepository.
+//                findByRatingsBetween(articleResponse.getRatings(), 5); // lay danh sach cac bai viet co luoc danh gia cao.
 
         List<Article> articleListInDate = iArticleRepository.findAllByPublishedDate(OtherFunctions.DateSystem()); // lay bai viet trong ngay.
 
@@ -178,12 +178,15 @@ public class Filtration {
     // tac gia va bai viet ma nhung nguoi ban co the biet
 
     public List<ArticleResponseSum> getListAuthorFollow(String idUser){
+
         User user = authenticationRepository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("user not found"));
 
         List<Follows> follows = user.getFollowers();
 
         List<User> followUser = List.copyOf(follows.stream().map(Follows::getFollowing).toList());
+
+
 
 
         return null;
