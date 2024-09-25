@@ -249,7 +249,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         user.setEmail(userRequest.getEmail());
         user.setName(userRequest.getName());
         user.setPhone(userRequest.getPhone());
-        user.setGender(userRequest.isGender() ? Gender.MALE : Gender.FEMALE);
+        user.setGender(userRequest.getIsGender());
         user.setAvata(userRequest.getAvata() != null ? userRequest.getAvata() : user.getAvata());
         user.setDescription(userRequest.getDescribe());
         user.setAddress(userRequest.getAddress());
