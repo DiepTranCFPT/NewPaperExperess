@@ -23,7 +23,7 @@ public class UserRequest {
     @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 digits")
     private String phone;
 
-    private boolean isGender; // true if MALE ,f= FEMALE
+    private Gender isGender; // true if MALE ,f= FEMALE
 
     private byte[] avata;
 
