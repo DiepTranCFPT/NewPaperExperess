@@ -28,8 +28,8 @@ public class TokenService {
     private RevokedTokenRepository revokedTokenRepository;
 
     private final String SECRET_KEY = "HT4bb6d1dfbafb64a681139d1586b6f1160d18159afd57c8c79136d7490630407c";
-    private final long ACCESS_TOKEN_EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 24 giờ
-    private final long REFRESH_TOKEN_EXPIRATION = 30 * 24 * 60 * 60 * 1000; // 30 ngày
+    private final long ACCESS_TOKEN_EXPIRATION = (long) 1 * 24 * 60 * 60 * 1000; // 24 giờ
+    private final long REFRESH_TOKEN_EXPIRATION = (long) 30 * 24 * 60 * 60 * 1000; // 30 ngày
 
     private final AuthenticationRepository authenticationRepository;
 
