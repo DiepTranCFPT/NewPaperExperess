@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,13 +16,14 @@ import java.util.List;
 @Component
 public class Filter extends OncePerRequestFilter {
 
-    private List<String> PUBLIC_ENDPOINTS;
+    private final List<String> PUBLIC_ENDPOINTS;
 
-    private List<String> PUBLIC_ENDPOINTS_METHOD;
+    private final List<String> PUBLIC_ENDPOINTS_METHOD;
 
 
 
-    public Filter(String[] PUBLIC_ENDPOINTS, String[] PUBLIC_ENDPOINTS_METHOD) {
+    public Filter(@Value("${public.endpoints}") String[] PUBLIC_ENDPOINTS,
+                  @Value("${public.endpoints.methods}") String[] PUBLIC_ENDPOINTS_METHOD) {
         this.PUBLIC_ENDPOINTS = Arrays.asList(PUBLIC_ENDPOINTS);
         this.PUBLIC_ENDPOINTS_METHOD = Arrays.asList(PUBLIC_ENDPOINTS_METHOD);
     }
