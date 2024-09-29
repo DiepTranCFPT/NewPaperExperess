@@ -7,6 +7,7 @@ import com.experess.news.entity.Type;
 import com.experess.news.utils.OtherFunctions;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,8 +20,7 @@ public class ArticleResponseDetails {
     private String title;
     private String content;
     private String status;
-    private String publishedDate;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String titlePhoto;
     private String author;
     private Type type;
@@ -36,9 +36,7 @@ public class ArticleResponseDetails {
         this.title = article.getTitle();
         this.content = article.getContent();
         this.status = article.getStatus();
-        this.publishedDate = article.getPublishedDate();
-        this.createdDate = article.getCreatedDate();
-        this.titlePhoto = article.getTitlePhoto();
+        this.createdDate = article.getTimeCreated();
         this.author = article.getAuthor().getId();
         this.type = article.getType();
         this.comments = article.getComments();

@@ -29,7 +29,6 @@ public interface IRatingService {
         if (user == null) throw new RuntimeException("User not found");
 
         return Rating.builder().rating(rating.getRating())
-                .createdDate(rating.getCreatedDate())
                 .user(user)
                 .article(article1)
                 .isPeerReview(user.getRole().equals(Role.AUTHOR))

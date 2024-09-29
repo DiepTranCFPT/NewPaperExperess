@@ -30,7 +30,6 @@ public class AccountResponse {
         this.email = user.getEmail();
         this.avatar = user.getAvata();
         this.role = user.getRole();
-        this.DataActivate = user.getDataActivate();
         this.phone = user.getPhone();
         this.gender = user.getGender();
         this.describe = user.getDescription();

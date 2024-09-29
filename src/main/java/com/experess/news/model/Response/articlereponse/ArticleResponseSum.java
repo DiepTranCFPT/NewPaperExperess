@@ -27,9 +27,7 @@ public class ArticleResponseSum {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.publishedDate = article.getPublishedDate();
-        this.createdDate = article.getCreatedDate();
-        this.author = article.getAuthor();
+      this.author = article.getAuthor();
         this.type = article.getType();
         this.ratings = article.getRatings();
         this.access = article.getAccess();
@@ -39,8 +37,6 @@ public class ArticleResponseSum {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.publishedDate = article.getPublishedDate();
-        this.createdDate = article.getCreatedDate();
         this.author = article.getAuthor().getName();
         this.type = article.getType();
         this.ratings = OtherFunctions.ratingMedium(article.getRatings());

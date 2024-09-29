@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -55,8 +56,8 @@ public class Filtration {
     // lay danh sach bai viet theo ngay tao
 
 
-    public List<String> getArticleListByDate(String publishedDate) {
-        List<Article> articles = iArticleRepository.findAllByPublishedDate(publishedDate);
+    public List<String> getArticleListByDate(LocalDateTime publishedDate) {
+        List<Article> articles = iArticleRepository.findAllByTimeCreated(publishedDate);
         return OtherFunctions.getListStringID(articles,
                 Article::getId);
     }
@@ -130,7 +131,7 @@ public class Filtration {
 //        List<Article> articleListbyRating = iArticleRepository.
 //                findByRatingsBetween(articleResponse.getRatings(), 5); // lay danh sach cac bai viet co luoc danh gia cao.
 
-        List<Article> articleListInDate = iArticleRepository.findAllByPublishedDate(OtherFunctions.DateSystem()); // lay bai viet trong ngay.
+        List<Article> articleListInDate = iArticleRepository.findAllByTimeCreated(LocalDateTime.now()); // lay bai viet trong ngay.
 
         articles.addAll(articleListInDate);
 

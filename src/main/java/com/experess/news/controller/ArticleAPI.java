@@ -1,6 +1,6 @@
 package com.experess.news.controller;
 
-import com.experess.news.service.ArticleService;
+import com.experess.news.iservice.IArticleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api")
 public class ArticleAPI {
 
-    private final ArticleService articleService;
+    private final IArticleService articleService;
 
     @Autowired
-    public ArticleAPI(ArticleService articleService) {
+    public ArticleAPI(IArticleService articleService) {
         this.articleService = articleService;
     }
 

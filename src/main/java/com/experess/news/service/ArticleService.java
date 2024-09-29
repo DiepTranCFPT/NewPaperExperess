@@ -1,6 +1,7 @@
 package com.experess.news.service;
 
 import com.experess.news.entity.Article;
+import com.experess.news.entity.Media;
 import com.experess.news.entity.User;
 import com.experess.news.iservice.IArticleService;
 import com.experess.news.iservice.ITypeService;
@@ -8,10 +9,12 @@ import com.experess.news.model.Request.ArticleRequest;
 import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.IArticleRepository;
+import com.experess.news.utils.OtherFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -55,30 +58,29 @@ public class ArticleService implements IArticleService {
     public Article writeArticle(ArticleRequest articleRequest) {
         User user = authenticationRepository.findById(articleRequest.getAuthor_id())
                 .orElseThrow(() -> new RuntimeException("Not Login"));
-        Article article = Article.builder()
+        Article article = Article.builder()///  loi khi gọi các field từ class choa
                 .author(user)
                 .title(articleRequest.getTitle())
                 .type(articleRequest.getType())
                 .content(articleRequest.getContent())
                 .status(articleRequest.getStatus())
-                .publishedDate(articleRequest.getPublishedDate())
-                .titlePhoto(articleRequest.getTitlePhoto())
                 .build();
         return iArticleRepository.save(article);
     }
 
     @Override
     public Article editArticle(String id, ArticleRequest articleRequest) {
+
         Article article = iArticleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Couldn't find article'"));
-        Article updatedArticle = Article.builder()
-                .id(article.getId()) //**
+
+
+        var updatedArticle = Article.builder()
+                .id(id)
                 .title(articleRequest.getTitle())
                 .type(articleRequest.getType())
                 .content(articleRequest.getContent())
                 .status(articleRequest.getStatus())
-                .publishedDate(articleRequest.getPublishedDate())
-                .titlePhoto(articleRequest.getTitlePhoto())
                 .build();
 
         return iArticleRepository.save(updatedArticle);

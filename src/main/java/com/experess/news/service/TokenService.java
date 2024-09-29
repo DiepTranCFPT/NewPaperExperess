@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,10 +31,11 @@ public class TokenService {
     private RevokedTokenRepository revokedTokenRepository;
 
     private final String SECRET_KEY = "HT4bb6d1dfbafb64a681139d1586b6f1160d18159afd57c8c79136d7490630407c";
-    private final long ACCESS_TOKEN_EXPIRATION = 1 * 24 * 60 * 60 * 1000; // 24 giờ
-    private final long REFRESH_TOKEN_EXPIRATION = 30 * 24 * 60 * 60 * 1000; // 30 ngày
+    private final long ACCESS_TOKEN_EXPIRATION = (long) 1 * 24 * 60 * 60 * 1000; // 24 giờ
+    private final long REFRESH_TOKEN_EXPIRATION = (long) 30 * 24 * 60 * 60 * 1000; // 30 ngày
 
-    private final AuthenticationRepository authenticationRepository;
+    @Autowired
+    private AuthenticationRepository authenticationRepository;
 
     public TokenService(AuthenticationRepository authenticationRepository) {
         this.authenticationRepository = authenticationRepository;
@@ -133,10 +137,16 @@ public class TokenService {
         String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
         Date expirationDate = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        RevokedToken revokedToken = new RevokedToken();
-        revokedToken.setTokenId(tokenId);
-        revokedToken.setExpirationDate(expirationDate);
 
+        // Convert Date datatype by LocalTime format
+
+        LocalTime localTime = Instant.ofEpochMilli(expirationDate.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalTime();
+
+
+        RevokedToken revokedToken = new RevokedToken();
+        revokedToken.setId(tokenId);
         revokedTokenRepository.save(revokedToken);
     }
 
@@ -145,7 +155,7 @@ public class TokenService {
         SignedJWT signedJWT = SignedJWT.parse(token);
         String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
 
-        return revokedTokenRepository.existsByTokenId(tokenId);
+        return revokedTokenRepository.existsById(tokenId);
     }
 
     private boolean isTokenExpired(Date expirationDate) {
