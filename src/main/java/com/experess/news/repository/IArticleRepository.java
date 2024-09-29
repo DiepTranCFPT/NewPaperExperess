@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,7 +21,7 @@ public interface IArticleRepository extends JpaRepository<Article, String> {
 
     List<Article> findByContentContaining(@NotNull String content);
 
-    List<Article> findAllByPublishedDate(@NotNull String publishedDate);
+    List<Article> findAllByTimeCreated(@NotNull LocalDateTime timeCreated);
 
     List<Article> findByTitleContaining(@NotNull String title);
 

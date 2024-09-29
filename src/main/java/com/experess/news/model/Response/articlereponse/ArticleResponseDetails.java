@@ -37,7 +37,6 @@ public class ArticleResponseDetails {
         this.content = article.getContent();
         this.status = article.getStatus();
         this.createdDate = article.getTimeCreated();
-        this.titlePhoto = article.getTitlePhoto();
         this.author = article.getAuthor().getId();
         this.type = article.getType();
         this.comments = article.getComments();

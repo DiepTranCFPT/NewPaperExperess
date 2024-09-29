@@ -34,7 +34,8 @@ public class TokenService {
     private final long ACCESS_TOKEN_EXPIRATION = (long) 1 * 24 * 60 * 60 * 1000; // 24 giờ
     private final long REFRESH_TOKEN_EXPIRATION = (long) 30 * 24 * 60 * 60 * 1000; // 30 ngày
 
-    private final AuthenticationRepository authenticationRepository;
+    @Autowired
+    private AuthenticationRepository authenticationRepository;
 
     public TokenService(AuthenticationRepository authenticationRepository) {
         this.authenticationRepository = authenticationRepository;
@@ -146,8 +147,6 @@ public class TokenService {
 
         RevokedToken revokedToken = new RevokedToken();
         revokedToken.setId(tokenId);
-        revokedToken.setTimeUpdatedLast(localTime);
-
         revokedTokenRepository.save(revokedToken);
     }
 
@@ -156,7 +155,7 @@ public class TokenService {
         SignedJWT signedJWT = SignedJWT.parse(token);
         String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
 
-        return revokedTokenRepository.existsByTokenId(tokenId);
+        return revokedTokenRepository.existsById(tokenId);
     }
 
     private boolean isTokenExpired(Date expirationDate) {

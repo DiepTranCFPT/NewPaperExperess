@@ -18,7 +18,7 @@ public class BaseObject {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected String id;
 
-    protected LocalDateTime TimeCreated;
+    protected LocalDateTime timeCreated;
 
     protected LocalDateTime TimeUpdatedLast;
 
@@ -28,7 +28,7 @@ public class BaseObject {
     // khi tao 1 doi tuong moi tg se duoc tu dong lu vao voi ngay gio he thong
     @PrePersist
     protected void createDateTime() {
-        TimeCreated = LocalDateTime.now();
+        timeCreated = LocalDateTime.now();
     }
 
 

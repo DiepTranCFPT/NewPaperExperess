@@ -27,7 +27,7 @@ public interface IAuthenticationService {
 
     default boolean verifyToforgot(String verificationCode) {return false;}
 
-    default Report reportUser(ReportRequest reportRequest) {return false;}
+    Report reportUser(ReportRequest reportRequest);
 
     boolean editUser(UserRequest user);
 

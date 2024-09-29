@@ -2,6 +2,7 @@ package com.experess.news.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -9,7 +10,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Type extends BaseObject {
 
     private String typeName;
