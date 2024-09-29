@@ -7,6 +7,7 @@ import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
 import com.experess.news.service.FirebaseService;
 import com.experess.news.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,13 +30,18 @@ public class Authentication {
     private final TokenService tokenService;
 
     @Autowired
-    public Authentication( IAuthenticationService authenticationService
+    public Authentication(IAuthenticationService authenticationService
             , FirebaseService firebaseService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.firebaseService = firebaseService;
         this.tokenService = tokenService;
     }
 
+
+    @Operation(summary = "Create a new Account",
+            description = "returns String status information"
+            ,security = {@SecurityRequirement(name = "bearer-key")}
+            , tags = {"account"})
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
         User user = authenticationService.register(registerRequest);
@@ -92,6 +98,7 @@ public class Authentication {
     public ResponseEntity<Boolean> verifyAccount(@NotNull @Valid @PathVariable(value = "code") String code) {
         return ResponseEntity.ok(authenticationService.verify(code));
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody Map<String, String> request) {
         try {
@@ -104,7 +111,7 @@ public class Authentication {
     }
 
     @PutMapping("/edit-profile")
-    public ResponseEntity<?> editAccount(@NotNull @RequestBody UserRequest request){
+    public ResponseEntity<?> editAccount(@NotNull @RequestBody UserRequest request) {
         boolean isEdit = authenticationService.editUser(request);
         return ResponseEntity.ok(isEdit);
     }
