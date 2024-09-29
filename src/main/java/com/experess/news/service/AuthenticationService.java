@@ -9,6 +9,7 @@ import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.model.Response.AccountResponse;
 import com.experess.news.repository.AuthenticationRepository;
 
+import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IReportRepository;
 import com.experess.news.utils.OtherFunctions;
 import com.experess.news.utils.SendMailUtils;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -33,6 +35,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final IReportRepository reportRepository;
+    private final IArticleRepository articleRepository;
     private String VerifyCode;
     private User user;
 
@@ -41,12 +44,14 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                                  TokenService tokenService,
                                  PasswordEncoder passwordEncoder,
                                  EmailService emailService,
-                                 IReportRepository reportRepository) {
+                                 IReportRepository reportRepository
+            , IArticleRepository articleRepository) {
         this.authenticationRepository = authenticationRepository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.reportRepository = reportRepository;
+        this.articleRepository = articleRepository;
     }
 
     @Transactional
@@ -61,7 +66,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
                 .isEnable(true)
-                .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .gender(Gender.MALE)
                 .build();
@@ -201,7 +205,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .email(GoogleAccount.getEmail())
                 .uid(GoogleAccount.getUid())
                 .isEnable(true)
-                .DataActivate(OtherFunctions.DateSystem())
                 .role(Role.USER)
                 .build();
         authenticationRepository.save(user);
@@ -230,29 +233,35 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
 
     @Override
-    public boolean reportUser(ReportRequest reportRequest) {
-        user = authenticationRepository.findById(reportRequest.getId()).orElseThrow(() ->
-                new RuntimeException("Account not found with id: " + reportRequest.getId()));
+    public Report reportUser(ReportRequest reportRequest) {
+
+        user = authenticationRepository.findById(reportRequest.getIdUser()).orElseThrow(() ->
+                new RuntimeException("Account not found with id: " + reportRequest.getIdUser()));
+
+        var article = articleRepository.findById(reportRequest.getIdArticle())
+                .orElseThrow(() -> new RuntimeException("article not found with id: " + reportRequest.getIdArticle()));
+
         Report report = reportRepository.save(Report.builder()
                 .Content(reportRequest.getContent())
                 .user(user)
+                .article(article)
                 .build());
-        return report != null;
+        return reportRepository.save(report);
     }
 
     @Override
-    public boolean editUser(UserRequest userRequest) {
-        User user = authenticationRepository.findById(userRequest.getId())
+    @Transactional
+    public boolean editUser(@NotNull UserRequest userRequest) {
+        var user = authenticationRepository.findById(userRequest.getId())
                 .orElseThrow(() -> new RuntimeException(""));
-        if (user == null) return false;
 
         user.setEmail(userRequest.getEmail());
+        user.setAvata(userRequest.getAvata());
+        user.setAddress(userRequest.getAddress());
         user.setName(userRequest.getName());
         user.setPhone(userRequest.getPhone());
-        user.setGender(userRequest.getIsGender());
-        user.setAvata(userRequest.getAvata() != null ? userRequest.getAvata() : user.getAvata());
         user.setDescription(userRequest.getDescribe());
-        user.setAddress(userRequest.getAddress());
+        user.setGender(userRequest.getIsGender());
 
         authenticationRepository.save(user);
         return true;

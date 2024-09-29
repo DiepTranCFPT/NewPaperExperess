@@ -4,15 +4,15 @@ import com.experess.news.infor.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
 public class UserRequest {
+
+    @NotNull
     private String id;
+    @NotNull
     private String name;
 
     @NotBlank(message = "Email is mandatory")
@@ -25,6 +25,7 @@ public class UserRequest {
 
     private Gender isGender; // true if MALE ,f= FEMALE
 
+    @NotNull
     private byte[] avata;
 
     private String address;

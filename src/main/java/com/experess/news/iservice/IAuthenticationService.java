@@ -1,5 +1,6 @@
 package com.experess.news.iservice;
 
+import com.experess.news.entity.Report;
 import com.experess.news.entity.User;
 import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
@@ -26,7 +27,7 @@ public interface IAuthenticationService {
 
     default boolean verifyToforgot(String verificationCode) {return false;}
 
-    default boolean reportUser(ReportRequest reportRequest) {return false;}
+    default Report reportUser(ReportRequest reportRequest) {return false;}
 
     boolean editUser(UserRequest user);
 

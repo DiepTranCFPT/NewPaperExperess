@@ -1,21 +1,16 @@
 package com.experess.news.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Type {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Type extends BaseObject {
 
     private String typeName;
 
@@ -25,5 +20,7 @@ public class Type {
 
     @OneToOne(mappedBy = "type")
     private Article article;
+
+
 }
 

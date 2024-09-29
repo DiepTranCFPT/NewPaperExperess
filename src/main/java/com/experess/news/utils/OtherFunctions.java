@@ -1,6 +1,7 @@
 package com.experess.news.utils;
 
 import com.experess.news.entity.Rating;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,6 +31,16 @@ public class OtherFunctions {
         }
     }
 
+    public static byte[] convertMultipartFileToByteArray(MultipartFile file){
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File is null or empty");
+        }
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * @param imageData {@link byte[]}

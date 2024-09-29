@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Component
 public class AccountUtils {
+    private  final AuthenticationRepository userRepository;
+
     @Autowired
-    AuthenticationRepository userRepository;
+    public AccountUtils(AuthenticationRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Optional<User> getCurrentUser(){
         String email=  SecurityContextHolder.getContext().getAuthentication().getName();

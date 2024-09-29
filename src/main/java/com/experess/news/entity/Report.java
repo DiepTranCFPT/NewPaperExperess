@@ -7,30 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Report {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Report extends BaseObject {
 
     private String Content;
-
-    private LocalDateTime time;
 
     @ManyToOne
     private User user;
 
     @ManyToOne
     private Article article;
-
-    @PrePersist
-    protected void createDateTime() {
-        time = LocalDateTime.now();
-    }
 
 }

@@ -1,29 +1,21 @@
 package com.experess.news.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.*;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Media {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Media extends BaseObject{
 
     @Lob
-    private List<byte[]> data;
+    private byte[] data;
 
     private String type;
-    private String uploadedDate;
 
     @ManyToOne
     @JoinColumn(name = "article_id")

@@ -5,10 +5,8 @@ import com.experess.news.infor.Gender;
 import com.experess.news.infor.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,16 +20,13 @@ import java.util.Collections;
 import java.util.List;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+@SuperBuilder
+public class User extends BaseObject implements UserDetails {
 
     private String name;
 
@@ -90,7 +85,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private String DataActivate;
 
     private String uid;
 
@@ -99,6 +93,7 @@ public class User implements UserDetails {
     private String description;
 
     private String address;
+
 
 
 

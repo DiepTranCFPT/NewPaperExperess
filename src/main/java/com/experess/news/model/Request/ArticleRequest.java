@@ -11,7 +11,6 @@ public class ArticleRequest {
     private String status;
     private String publishedDate;
     private String createdDate;
-    private String titlePhoto;
     private String author_id;
     private Type type;
 

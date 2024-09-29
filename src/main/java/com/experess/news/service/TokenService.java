@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -133,9 +136,17 @@ public class TokenService {
         String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
         Date expirationDate = signedJWT.getJWTClaimsSet().getExpirationTime();
 
+
+        // Convert Date datatype by LocalTime format
+
+        LocalTime localTime = Instant.ofEpochMilli(expirationDate.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalTime();
+
+
         RevokedToken revokedToken = new RevokedToken();
-        revokedToken.setTokenId(tokenId);
-        revokedToken.setExpirationDate(expirationDate);
+        revokedToken.setId(tokenId);
+        revokedToken.setTimeUpdatedLast(localTime);
 
         revokedTokenRepository.save(revokedToken);
     }

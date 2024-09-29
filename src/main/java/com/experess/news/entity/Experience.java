@@ -14,10 +14,7 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 @AllArgsConstructor
 // kinh nghiem
-public class Experience {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Experience extends BaseObject {
 
     @ManyToOne
     private User user;
