@@ -7,6 +7,8 @@ import com.experess.news.infor.Role;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.format.DateTimeFormatter;
+
 
 @Getter
 @Setter
@@ -34,6 +36,7 @@ public class AccountResponse {
         this.gender = user.getGender();
         this.describe = user.getDescription();
         this.address = user.getAddress();
+        this.DataActivate = user.getTimeCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }
 

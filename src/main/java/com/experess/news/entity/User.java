@@ -61,6 +61,7 @@ public class User extends BaseObject implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Report> reports;
 
+    private String birthDate;
     // theo doi
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follows> followingUsers;
@@ -93,8 +94,6 @@ public class User extends BaseObject implements UserDetails {
     private String description;
 
     private String address;
-
-
 
 
 
