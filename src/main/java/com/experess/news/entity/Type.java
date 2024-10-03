@@ -22,6 +22,7 @@ public class Type extends BaseObject {
     @OneToOne(mappedBy = "type")
     private Article article;
 
-
+    @ManyToOne
+    private Care care;
 }
 

@@ -266,6 +266,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         user.setGender(userRequest.getIsGender());
 
         authenticationRepository.save(user);
+
         return true;
     }
 }
