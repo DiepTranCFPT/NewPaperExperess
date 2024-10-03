@@ -27,18 +27,19 @@ import java.util.Map;
 @Service
 public class TokenService {
 
-    @Autowired
-    private RevokedTokenRepository revokedTokenRepository;
+
 
     private final String SECRET_KEY = "HT4bb6d1dfbafb64a681139d1586b6f1160d18159afd57c8c79136d7490630407c";
-    private final long ACCESS_TOKEN_EXPIRATION = (long) 1 * 24 * 60 * 60 * 1000; // 24 giờ
-    private final long REFRESH_TOKEN_EXPIRATION = (long) 30 * 24 * 60 * 60 * 1000; // 30 ngày
+    private final long ACCESS_TOKEN_EXPIRATION = (long) 1 * 24 * 60 * 60 * 1000;
+    private final long REFRESH_TOKEN_EXPIRATION = (long) 30 * 24 * 60 * 60 * 1000;
 
+    private final RevokedTokenRepository revokedTokenRepository;
+    private final AuthenticationRepository authenticationRepository;
     @Autowired
-    private AuthenticationRepository authenticationRepository;
-
-    public TokenService(AuthenticationRepository authenticationRepository) {
+    public TokenService(AuthenticationRepository authenticationRepository,
+                        RevokedTokenRepository revokedTokenRepository) {
         this.authenticationRepository = authenticationRepository;
+        this.revokedTokenRepository = revokedTokenRepository;
     }
 
     // Phương thức tạo Access Token và Refresh Token

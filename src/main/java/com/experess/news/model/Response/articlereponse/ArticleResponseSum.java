@@ -23,17 +23,17 @@ public class ArticleResponseSum {
     private int ratings;
     private int access;
 
-    public ArticleResponseSum(ArticleResponseDetails article){
+    public ArticleResponseSum(ArticleResponseDetails article) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-      this.author = article.getAuthor();
+        this.author = article.getAuthor();
         this.type = article.getType();
         this.ratings = article.getRatings();
         this.access = article.getAccess();
     }
 
-    public ArticleResponseSum(Article article){
+    public ArticleResponseSum(Article article) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();

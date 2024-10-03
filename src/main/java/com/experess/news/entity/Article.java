@@ -19,6 +19,8 @@ public class Article extends BaseObject {
     private String content;
     private String status;
 
+    private boolean isShow;// true la dang f an
+
     @ManyToOne
     @NotNull
     private User author;

@@ -67,6 +67,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 .email(registerRequest.getEmail())
                 .isEnable(true)
                 .role(Role.USER)
+                .birthDate("01/01/2000")
                 .gender(Gender.MALE)
                 .build();
 
@@ -99,6 +100,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
         user = authenticationRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
+
         AccountResponse accountResponse;
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
@@ -264,6 +266,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         user.setGender(userRequest.getIsGender());
 
         authenticationRepository.save(user);
+
         return true;
     }
 }
