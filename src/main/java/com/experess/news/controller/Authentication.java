@@ -44,9 +44,9 @@ public class Authentication {
             , security = {@SecurityRequirement(name = "bearer-key")}
             , tags = {"account"})
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        User user = authenticationService.register(registerRequest);
-        return user != null ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        boolean user = authenticationService.register(registerRequest);
+        return user ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
     }
 
     @Operation(summary = "Create a new Account Google",
@@ -85,7 +85,7 @@ public class Authentication {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<User> forgotpasswordKey(@RequestParam String password) {
+    public ResponseEntity<?> forgotpasswordKey(@RequestParam String password) {
         return ResponseEntity.ok(authenticationService.changePassword(password));
     }
 

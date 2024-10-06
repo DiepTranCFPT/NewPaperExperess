@@ -1,20 +1,19 @@
 package com.experess.news.service;
 
 import com.experess.news.entity.Article;
-import com.experess.news.entity.Media;
 import com.experess.news.entity.User;
 import com.experess.news.iservice.IArticleService;
 import com.experess.news.iservice.ITypeService;
 import com.experess.news.model.Request.ArticleRequest;
 import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 import com.experess.news.repository.AuthenticationRepository;
+import com.experess.news.repository.ICareRepository;
+import com.experess.news.repository.IHistoryRepository;
 import com.experess.news.repository.IArticleRepository;
-import com.experess.news.utils.OtherFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -24,14 +23,21 @@ public class ArticleService implements IArticleService {
     private final IArticleRepository iArticleRepository;
     private final AuthenticationRepository authenticationRepository;
     private final ITypeService iTypeService;
+    private final ICareRepository careRepository;
+    private final IHistoryRepository historyRepository;
 
     @Autowired
     public ArticleService(IArticleRepository iArticleRepository
             , AuthenticationRepository authenticationRepository,
-                          ITypeService iTypeService) {
+                          ITypeService iTypeService,
+                          ICareRepository careRepository,
+                          IHistoryRepository historyRepository
+                          ) {
         this.iArticleRepository = iArticleRepository;
         this.authenticationRepository = authenticationRepository;
         this.iTypeService = iTypeService;
+        this.careRepository = careRepository;
+        this.historyRepository = historyRepository;
     }
 
 
