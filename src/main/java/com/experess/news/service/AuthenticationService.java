@@ -56,7 +56,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
     @Transactional
     @Override
-    public User register(RegisterRequest registerRequest) {
+    public boolean register(RegisterRequest registerRequest) {
         if (authenticationRepository.existsByEmail(registerRequest.getEmail()))
             throw new AuthException("Email already in use");
 
@@ -82,7 +82,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return user;
+        return true;
     }
 
     public boolean verify(String verificationCode) {
@@ -145,7 +145,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
     @Override
     @Transactional
-    public void forgotPassword(String email) {
+    public boolean forgotPassword(String email) {
         user = authenticationRepository.findByEmail(email)
                 .orElseThrow(() -> new AuthException("Account not found with email: " + email));
 
@@ -158,14 +158,18 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+        return true;
     }
 
 
     @Override
     @Transactional
-    public User changePassword(String newPassword) {
+    public boolean changePassword(String newPassword) {
+        if (newPassword.isEmpty() || user.getPassword().equals(newPassword))
+            return false;
         user.setPassword(passwordEncoder.encode(newPassword));
-        return authenticationRepository.save(user);
+        authenticationRepository.save(user);
+        return true;
     }
 
     @Override

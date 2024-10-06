@@ -111,6 +111,8 @@ public class User extends BaseObject implements UserDetails {
     public boolean isEnabled() {
         return this.isEnable;
     }
+
+
 }
 
 

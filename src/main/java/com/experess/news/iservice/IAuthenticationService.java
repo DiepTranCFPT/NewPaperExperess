@@ -7,8 +7,8 @@ import com.experess.news.model.Response.AccountResponse;
 
 
 public interface IAuthenticationService {
-    default User register(RegisterRequest registerRequest) {
-        return null;
+    default boolean register(RegisterRequest registerRequest) {
+        return false;
     }
 
     default boolean verify(String verificationCode) {
@@ -23,7 +23,8 @@ public interface IAuthenticationService {
         return null;
     }
 
-    default void forgotPassword(String email) {
+    default boolean forgotPassword(String email) {
+        return false;
     }
 
     default boolean resetPassword(ResetPasswordRequest resetPasswordRequest) {
@@ -36,8 +37,8 @@ public interface IAuthenticationService {
         return null;
     }
 
-    default User changePassword(String newPassword) {
-        return null;
+    default boolean changePassword(String newPassword) {
+        return false;
     }
 
     default boolean verifyToforgot(String verificationCode) {
