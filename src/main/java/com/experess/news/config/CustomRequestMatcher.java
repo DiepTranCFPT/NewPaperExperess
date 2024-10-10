@@ -13,6 +13,7 @@ public class  CustomRequestMatcher implements RequestMatcher {
         this.PUBLIC_ENDPOINTS_METHOD = Arrays.asList(publicEndpoints);
     }
 
+
     @Override
     public boolean matches(jakarta.servlet.http.HttpServletRequest request) {
         String method = request.getMethod();
