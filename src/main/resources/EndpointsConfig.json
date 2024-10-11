@@ -1,0 +1,6 @@
+{
+  "PublicEndpoints": [
+    "/api/**",
+    "/api/login"
+  ]
+}

@@ -1,25 +1,29 @@
 package com.experess.news.securityconfig;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS ;
+
+    private SecurityConfig() throws IOException{
+        EndpointsConfig endpointsConfig = EndpointsConfig.getEndpointsConfig();
+        PUBLIC_ENDPOINTS = endpointsConfig.publicEndpoints.toArray(new String[0]);
+
+    }
+
     @Bean
     public UserDetailsService userDetailsService() throws Exception{
         User.UserBuilder users = User.withDefaultPasswordEncoder();
