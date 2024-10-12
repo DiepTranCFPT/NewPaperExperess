@@ -16,6 +16,7 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final String[] PUBLIC_ENDPOINTS ;
 
     private SecurityConfig() throws IOException{
@@ -39,6 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new UnauthorizedHandler()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PUBLIC_ENDPOINTS)
                         .permitAll()
