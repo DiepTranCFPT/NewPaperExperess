@@ -1,6 +1,9 @@
 {
   "PublicEndpoints": [
-    "/api/**",
-    "/api/login"
+    "/v3/api-docs/**",
+    "/swagger-ui/**",
+    "/api/auth/**",
+    "/api/test/**",
+    "/swagger-ui/index.html"
   ]
 }

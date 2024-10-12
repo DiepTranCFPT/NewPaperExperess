@@ -1,6 +1,5 @@
 package com.experess.news;
 
-import io.swagger.models.Swagger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -9,8 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.awt.*;
-import java.net.URI;
 import java.util.concurrent.Executor;
 
 @SpringBootApplication
@@ -19,19 +16,24 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class NewExperessApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(NewExperessApplication.class, args).close();
+		SpringApplication.run(NewExperessApplication.class, args);
+//		openSwaggerUI();
 	}
+
+//	@Bean
+//	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> containerCustomizer() {
+//		return factory -> factory.setPort(8080);
+//	}
+
 //	private static void openSwaggerUI() {
 //		try {
-//			// Kiểm tra xem desktop có hỗ trợ mở URL không
 //			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-//				Desktop.getDesktop().browse(new URI("http://localhost:808"));
+//				Desktop.getDesktop().browse(new URI("http://localhost:8080/swagger-ui.html"));
 //			}
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
 //	}
-
 
 	@Bean
 	public Executor taskExecutor() {
@@ -43,5 +45,4 @@ public class NewExperessApplication {
 		threadPoolTaskExecutor.initialize();
 		return threadPoolTaskExecutor;
 	}
-
 }

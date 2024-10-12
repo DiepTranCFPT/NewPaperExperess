@@ -5,19 +5,17 @@ import com.experess.news.entity.User;
 import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
-import com.experess.news.service.FirebaseService;
-import com.experess.news.service.TokenService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @RestController
@@ -27,15 +25,10 @@ import java.util.Map;
 public class Authentication {
 
     private final IAuthenticationService authenticationService;
-    private final FirebaseService firebaseService;
-    private final TokenService tokenService;
 
     @Autowired
-    public Authentication(IAuthenticationService authenticationService
-            , FirebaseService firebaseService, TokenService tokenService) {
+    public Authentication(IAuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.firebaseService = firebaseService;
-        this.tokenService = tokenService;
     }
 
 
@@ -111,7 +104,6 @@ public class Authentication {
     public ResponseEntity<?> logout(@RequestBody Map<String, String> request) {
         try {
             String token = request.get("token");
-            tokenService.revokeToken(token);
             return ResponseEntity.ok("Token revoked successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to revoke token");

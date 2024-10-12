@@ -13,15 +13,13 @@ import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IFollowRepository;
 import com.experess.news.utils.OtherFunctions;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * cac chuc nang loc
@@ -186,9 +184,6 @@ public class Filtration {
         List<Follows> follows = user.getFollowers();
 
         List<User> followUser = List.copyOf(follows.stream().map(Follows::getFollowing).toList());
-
-
-
 
         return null;
     }
