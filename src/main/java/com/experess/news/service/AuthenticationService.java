@@ -15,6 +15,7 @@ import com.experess.news.utils.OtherFunctions;
 import com.experess.news.utils.SendMailUtils;
 import com.experess.news.model.Request.*;
 import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -31,7 +31,6 @@ import java.io.IOException;
 public class AuthenticationService implements IAuthenticationService, UserDetailsService {
 
     private final AuthenticationRepository authenticationRepository;
-    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final IReportRepository reportRepository;
@@ -41,13 +40,11 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
-                                 TokenService tokenService,
-                                 PasswordEncoder passwordEncoder,
                                  EmailService emailService,
+                                 PasswordEncoder passwordEncoder,
                                  IReportRepository reportRepository
             , IArticleRepository articleRepository) {
         this.authenticationRepository = authenticationRepository;
-        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.reportRepository = reportRepository;
@@ -107,9 +104,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             throw new AuthException("Wrong Id Or Password");
 
 
-        String token = tokenService.generateTokens(user).toString();
+//        String token = tokenService.generateTokens(user).toString();
         accountResponse = new AccountResponse(user);
-        accountResponse.setToken(token);
+//        accountResponse.setToken(token);
 
         return accountResponse;
     }
@@ -204,7 +201,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     @Transactional
     public User registerforGoogle(RegisterforGoogle GoogleAccount) {
         if (authenticationRepository.existsByUid(GoogleAccount.getUid()))
-            throw new AuthException("TaiKhoanTontai ");
+            throw new AuthException("Tai Khoan Ton tai ");
 
         user = User.builder()
                 .name(GoogleAccount.getDisplayName())

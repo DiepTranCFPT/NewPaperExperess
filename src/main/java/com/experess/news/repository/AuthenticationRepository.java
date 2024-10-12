@@ -3,10 +3,10 @@ package com.experess.news.repository;
 import com.experess.news.entity.User;
 
 import com.experess.news.infor.Role;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 

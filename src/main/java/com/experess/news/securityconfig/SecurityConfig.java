@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -17,20 +19,23 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS ;
+    private String[] PUBLIC_ENDPOINTS;
 
-    private SecurityConfig() throws IOException{
+    public SecurityConfig() throws IOException {
         EndpointsConfig endpointsConfig = EndpointsConfig.getEndpointsConfig();
         PUBLIC_ENDPOINTS = endpointsConfig.publicEndpoints.toArray(new String[0]);
 
     }
 
     @Bean
-    public UserDetailsService userDetailsService() throws Exception{
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
+    public UserDetailsService userDetailsService() throws Exception {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(users.username("user").password("password").roles("USER").build());
-        manager.createUser(users.username("admin").password("password").roles("USER","ADMIN").build());
+        manager.createUser(User.withUsername("user")
+                .password(getPasswordEncoder().encode("password"))
+                .roles("USER").build());
+        manager.createUser(User.withUsername("admin")
+                .password(getPasswordEncoder().encode("password"))
+                .roles("USER", "ADMIN").build());
         return manager;
     }
 
@@ -40,14 +45,24 @@ public class SecurityConfig {
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(new UnauthorizedHandler()))
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(new UnauthorizedHandler())
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PUBLIC_ENDPOINTS)
                         .permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
 
+
+    @Bean
+//    @Order(2)
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

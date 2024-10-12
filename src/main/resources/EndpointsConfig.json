@@ -3,6 +3,7 @@
     "/v3/api-docs/**",
     "/swagger-ui/**",
     "/api/auth/**",
-    "/api/test/**"
+    "/api/test/**",
+    "/swagger-ui/index.html"
   ]
 }

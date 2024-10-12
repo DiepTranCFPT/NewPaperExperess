@@ -19,8 +19,9 @@ public class EndpointsConfig {
     }
 
     public static EndpointsConfig getEndpointsConfig() throws IOException {
+
         return new ObjectMapper()
-                .readValue(EndpointsConfig.class.getResourceAsStream("EndpointsConfig.json"),
+                .readValue(EndpointsConfig.class.getResourceAsStream("/EndpointsConfig.json"),
                         EndpointsConfig.class);
     }
 
