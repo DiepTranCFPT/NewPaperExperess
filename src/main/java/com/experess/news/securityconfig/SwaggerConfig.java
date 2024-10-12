@@ -1,12 +1,8 @@
 package com.experess.news.securityconfig;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.properties.SwaggerUiConfigParameters;
@@ -17,10 +13,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @OpenAPIDefinition(info = @io.swagger.v3.oas.annotations.info.Info(title = "Authentication Service", version = "v0.0.1", description = "This is auth service used for validating the user."))
 @Configuration
 @EnableWebMvc
+@EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
     private final SwaggerUiConfigProperties swaggerUiConfigProperties;
     private final SwaggerUiConfigParameters swaggerUiConfigParameters;
@@ -39,8 +41,17 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new OpenAPI()
                 .info(new Info()
                         .title("My API")
-                        .version("1.0")
+                        .version("v0.0.1")
                         .description("API Documentation"));
+    }
+
+    @Bean
+    public Docket api(){
+        return new Docket(DocumentationType.SWAGGER_2)
+               .select()
+               .apis(RequestHandlerSelectors.any())
+               .paths(PathSelectors.any())
+               .build();
     }
 
 //    @Bean
@@ -92,13 +103,12 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
                 .group("public")
-                .pathsToMatch("/**")
+                .pathsToMatch("/api/**")
                 .build();
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springdoc-openapi-ui/1.8.0/");
+        registry.addResourceHandler("/swagger-ui/**");
     }
 }
