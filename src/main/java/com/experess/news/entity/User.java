@@ -11,11 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class User extends BaseObject implements UserDetails {
+public class User extends BaseObject {
 
     private String name;
 
@@ -97,35 +93,35 @@ public class User extends BaseObject implements UserDetails {
 
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return this.isEnable;
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return this.email;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return this.isEnable;
+//    }
 
 
 }

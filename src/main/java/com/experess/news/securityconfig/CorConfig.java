@@ -1,28 +1,18 @@
-package com.experess.news.securityconfig;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
-public class CorConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedHeaders("*")
-                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Methods","Access-Control-Allow-Headers")
-                .allowedMethods("PUT", "POST", "GET", "DELETE")
-                .maxAge(1440000);
-    }
+//package com.experess.news.securityconfig;
 //
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.web.servlet.config.annotation.CorsRegistry;
+//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+//
+//@Configuration
+//public class CorConfig implements WebMvcConfigurer {
 //    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-////        registry.addResourceHandler("/static/**")
-////                .addResourceLocations("classpath:/static/");
-//        registry.addResourceHandler("/swagger-ui/**")
-//                .addResourceLocations("classpath:/META-INF/resources/webjars/springdoc-openapi-ui/1.7.0/");
+//    public void addCorsMappings(CorsRegistry registry) {
 //
+//        registry.addMapping("/**")
+//                .allowedOrigins("/**")
+//                .allowedHeaders("*")
+//                .allowedMethods("PUT", "POST", "GET", "DELETE")
+//                .maxAge(1440000);
 //    }
-}
+//}

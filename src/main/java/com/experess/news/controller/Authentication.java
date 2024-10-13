@@ -6,8 +6,6 @@ import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@SecurityRequirement(name = "api")
 @CrossOrigin("*")
 @RequestMapping("api")
 public class Authentication {
@@ -32,30 +29,19 @@ public class Authentication {
     }
 
 
-    @Operation(summary = "Create a new Account",
-            description = "returns String status information"
-            , security = {@SecurityRequirement(name = "bearer-key")}
-            , tags = {"account"})
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         boolean user = authenticationService.register(registerRequest);
         return user ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
     }
 
-    @Operation(summary = "Create a new Account Google",
-            description = "returns String status information"
-            , security = {@SecurityRequirement(name = "bearer-key")}
-            , tags = {"account"})
     @PostMapping("/registergg")
     public ResponseEntity<String> registerGG(@RequestBody RegisterforGoogle registerGGRequest) {
         User user = authenticationService.registerforGoogle(registerGGRequest);
         return user != null ? ResponseEntity.ok("ok") : ResponseEntity.ok("error");
     }
 
-    @Operation(summary = "Login a new Account",
-            description = "returns AccountResponse"
-            //,security = {@SecurityRequirement(name = "bearer-key")}
-            , tags = {"loginRequest"})
+
     @PostMapping("/login")
     public ResponseEntity<AccountResponse> login(@RequestBody LoginRequest loginRequest) {
         AccountResponse account = authenticationService.login(loginRequest);
@@ -115,4 +101,10 @@ public class Authentication {
         boolean isEdit = authenticationService.editUser(request);
         return ResponseEntity.ok(isEdit);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.ok("Hello World!");
+    }
+
 }
