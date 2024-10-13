@@ -15,34 +15,8 @@ import java.util.concurrent.Executor;
 @EntityScan(basePackages = {"com.experess.news.entity"})
 @EnableAsync
 public class NewExperessApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(NewExperessApplication.class, args);
-//		openSwaggerUI();
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(NewExperessApplication.class, args);
+    }
 
-//	@Bean
-//	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> containerCustomizer() {
-//		return factory -> factory.setPort(8080);
-//	}
-
-//	private static void openSwaggerUI() {
-//		try {
-//			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-//				Desktop.getDesktop().browse(new URI("http://localhost:8080/swagger-ui.html"));
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
-	@Bean
-	public Executor taskExecutor() {
-		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-		threadPoolTaskExecutor.setCorePoolSize(2);
-		threadPoolTaskExecutor.setMaxPoolSize(2);
-		threadPoolTaskExecutor.setQueueCapacity(500);
-		threadPoolTaskExecutor.setThreadNamePrefix("task-executor");
-		threadPoolTaskExecutor.initialize();
-		return threadPoolTaskExecutor;
-	}
 }

@@ -17,10 +17,7 @@ import com.experess.news.model.Request.*;
 import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +25,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Service
-public class AuthenticationService implements IAuthenticationService, UserDetailsService {
+public class AuthenticationService implements IAuthenticationService {
 
     private final AuthenticationRepository authenticationRepository;
-    private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final IReportRepository reportRepository;
     private final IArticleRepository articleRepository;
@@ -41,11 +37,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
                                  EmailService emailService,
-                                 PasswordEncoder passwordEncoder,
-                                 IReportRepository reportRepository
-            , IArticleRepository articleRepository) {
+                                 @Lazy IReportRepository reportRepository
+            , @Lazy IArticleRepository articleRepository) {
         this.authenticationRepository = authenticationRepository;
-        this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.reportRepository = reportRepository;
         this.articleRepository = articleRepository;
@@ -60,7 +54,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         VerifyCode = OtherFunctions.generateRandomNumberString();
         user = User.builder()
                 .name(registerRequest.getName())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
+//                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
                 .isEnable(true)
                 .role(Role.USER)
@@ -100,8 +94,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
         AccountResponse accountResponse;
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
-            throw new AuthException("Wrong Id Or Password");
+//        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
+//            throw new AuthException("Wrong Id Or Password");
 
 
 //        String token = tokenService.generateTokens(user).toString();
@@ -164,7 +158,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     public boolean changePassword(String newPassword) {
         if (newPassword.isEmpty() || user.getPassword().equals(newPassword))
             return false;
-        user.setPassword(passwordEncoder.encode(newPassword));
+//        user.setPassword(passwordEncoder.encode(newPassword));
         authenticationRepository.save(user);
         return true;
     }
@@ -181,10 +175,10 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         user = authenticationRepository.findByEmail(resetPasswordRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + resetPasswordRequest.getEmail()));
 
-        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword()))
-            throw new AuthException("Wrong password");
-
-        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+//        if (!passwordEncoder.matches(resetPasswordRequest.getOldPassword(), user.getPassword()))
+//            throw new AuthException("Wrong password");
+//
+//        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         authenticationRepository.save(user);
 
         return true;
@@ -225,14 +219,14 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        user = authenticationRepository.findByName(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return user;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+////        user = authenticationRepository.findByName(username);
+////        if (user == null) {
+////            throw new UsernameNotFoundException(username);
+////        }
+//        return user;
+//    }
 
 
     @Override
