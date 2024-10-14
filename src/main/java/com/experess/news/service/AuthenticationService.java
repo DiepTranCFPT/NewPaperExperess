@@ -1,5 +1,6 @@
 package com.experess.news.service;
 
+import com.experess.news.entity.CustomUserDetails;
 import com.experess.news.entity.Report;
 import com.experess.news.entity.User;
 import com.experess.news.exception.AuthException;
@@ -18,6 +19,12 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,26 +32,40 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Service
-public class AuthenticationService implements IAuthenticationService {
+public class AuthenticationService implements IAuthenticationService, UserDetailsService {
 
+//    private final AuthenticationManager authenticationManager;
     private final AuthenticationRepository authenticationRepository;
     private final EmailService emailService;
     private final IReportRepository reportRepository;
     private final IArticleRepository articleRepository;
+    private final PasswordEncoder passwordEncoder;
     private String VerifyCode;
     private User user;
 
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
                                  EmailService emailService,
+                                 PasswordEncoder passwordEncoder,
                                  @Lazy IReportRepository reportRepository
+//                                 AuthenticationManager authenticationManager
             , @Lazy IArticleRepository articleRepository) {
         this.authenticationRepository = authenticationRepository;
+        this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.reportRepository = reportRepository;
         this.articleRepository = articleRepository;
+//        this.authenticationManager = authenticationManager;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = authenticationRepository.findByName(username);
+        if(user == null)
+            throw new UsernameNotFoundException(username);
+
+        return new CustomUserDetails(user);
+    }
     @Transactional
     @Override
     public boolean register(RegisterRequest registerRequest) {
@@ -54,7 +75,7 @@ public class AuthenticationService implements IAuthenticationService {
         VerifyCode = OtherFunctions.generateRandomNumberString();
         user = User.builder()
                 .name(registerRequest.getName())
-//                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
                 .isEnable(true)
                 .role(Role.USER)
@@ -88,21 +109,15 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     @Transactional
     public AccountResponse login(LoginRequest loginRequest) {
-
-        user = authenticationRepository.findByEmail(loginRequest.getEmail())
+        var user = authenticationRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
 
-        AccountResponse accountResponse;
-
-//        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
-//            throw new AuthException("Wrong Id Or Password");
-
-
-//        String token = tokenService.generateTokens(user).toString();
-        accountResponse = new AccountResponse(user);
-//        accountResponse.setToken(token);
-
-        return accountResponse;
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new AuthException("Invalid password");
+        }
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        return new AccountResponse(user);
     }
 
     @Override
@@ -264,5 +279,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         return true;
     }
+
+
 }
 
