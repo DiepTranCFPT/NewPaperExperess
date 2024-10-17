@@ -1,51 +1,40 @@
-//package com.experess.news.securityconfig;
-//
-//import org.springframework.context.annotation.Configuration;
-//
-//
-//@Configuration
-////@EnableWebSecurity
-//public class SecurityConfig {
-//
-////    private String[] PUBLIC_ENDPOINTS = {
-////            "/v2/api-docs/**",
-////            "/swagger-resources/**",
-////            "/swagger-ui.html",
-////            "/webjars/**",
-////            "/swagger-ui/**",
-////            "/api/auth/**",
-////            "/api/test/**"
-////    };
-////
-////
-////    @Bean
-//////    @Primary
-////    public UserDetailsService userDetailsService() throws Exception {
-////        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-////        manager.createUser(User.withUsername("user")
-////                .password(getPasswordEncoder().encode("password"))
-////                .roles("USER").build());
-////        manager.createUser(User.withUsername("admin")
-////                .password(getPasswordEncoder().encode("password"))
-////                .roles("USER", "ADMIN").build());
-////        return manager;
-////    }
-//
-//
-////    @Bean
-////    @Order(1)
-////    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-////        http
-////                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-////                .httpBasic(Customizer.withDefaults());
-////
-////        return http.build();
-////    }
-////
-////
-////    @Bean
-////    @Order(2)
-////    PasswordEncoder getPasswordEncoder() {
-////        return new BCryptPasswordEncoder();
-////    }
-//}
+package com.experess.news.securityconfig;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private final String[] PUBLIC_ENDPOINT = {
+            "/api/**",
+            "/login/**",
+            "/swagger-ui/**"
+//            , "http://localhost:8080/swagger-ui/index.html"
+    };
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults()) // Cấu hình cơ bản cho HTTP Basic Auth
+                .build();
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Sử dụng BCrypt để mã hóa mật khẩu
+    }
+}
