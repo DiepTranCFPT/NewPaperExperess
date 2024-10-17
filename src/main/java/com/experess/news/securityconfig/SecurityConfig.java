@@ -12,24 +12,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINT = {
             "/api/**",
             "/login/**",
             "/swagger-ui/**"
+//            , "http://localhost:8080/swagger-ui/index.html"
     };
-
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(PUBLIC_ENDPOINT).permitAll() // Công khai các endpoint trong PUBLIC_ENDPOINT
-                        .anyRequest().authenticated() // Yêu cầu xác thực với các yêu cầu còn lại
-                )
-//                .addFilterBefore(, UsernamePasswordAuthenticationFilter.class) // Thêm JwtAuthenticationFilter trước UsernamePasswordAuthenticationFilter
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults()) // Cấu hình cơ bản cho HTTP Basic Auth
                 .build();
     }
