@@ -62,35 +62,46 @@ public class ArticleService implements IArticleService {
     @Override
     @Transactional
     public Article writeArticle(ArticleRequest articleRequest) {
+        // Fetch the author based on the author ID from the request
         User user = authenticationRepository.findById(articleRequest.getAuthor_id())
-                .orElseThrow(() -> new RuntimeException("Not Login"));
-        Article article = Article.builder()///  loi khi gọi các field từ class choa
-                .author(user)
+                .orElseThrow(() -> new RuntimeException("User not found or not logged in"));
+
+        // Build the Article object
+        Article article = Article.builder()
+                .author(user)  // Ensure this is set correctly
                 .title(articleRequest.getTitle())
                 .type(articleRequest.getType())
                 .content(articleRequest.getContent())
                 .status(articleRequest.getStatus())
+                .access(0)  // Initialize access count to 0 or another default value
+                .isPublished(false) // Optional, depends on your logic (e.g., if the article should start as unpublished)
                 .build();
+
         return iArticleRepository.save(article);
     }
 
+
+
     @Override
     public Article editArticle(String id, ArticleRequest articleRequest) {
+        Article existingArticle = iArticleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Article not found"));
 
-        Article article = iArticleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Couldn't find article'"));
-
-
-        var updatedArticle = Article.builder()
-                .id(id)
+        // Update fields in the existing article
+        Article updatedArticle = Article.builder()
+                .id(existingArticle.getId())  // Use existing article's ID
+                .author(existingArticle.getAuthor())  // Keep the author
                 .title(articleRequest.getTitle())
                 .type(articleRequest.getType())
                 .content(articleRequest.getContent())
                 .status(articleRequest.getStatus())
+                .access(existingArticle.getAccess())
+                .isPublished(false)// Keep existing access count
                 .build();
 
         return iArticleRepository.save(updatedArticle);
     }
+
 
 
     @Override
@@ -113,10 +124,5 @@ public class ArticleService implements IArticleService {
         return iArticleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("ID Not found"));
     }
-
-
-
-
-
 
 }
