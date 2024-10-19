@@ -6,10 +6,16 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorConfig implements WebMvcConfigurer {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -19,6 +25,7 @@ public class CorConfig implements WebMvcConfigurer {
                 .allowedMethods("PUT", "POST", "GET", "DELETE", "OPTIONS")
                 .maxAge(14400);
     }
+
 
     @Bean
     public CorsFilter getCorsFilter() {
