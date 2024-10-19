@@ -19,8 +19,6 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +32,6 @@ import java.io.IOException;
 @Service
 public class AuthenticationService implements IAuthenticationService, UserDetailsService {
 
-//    private final AuthenticationManager authenticationManager;
     private final AuthenticationRepository authenticationRepository;
     private final EmailService emailService;
     private final IReportRepository reportRepository;
@@ -58,6 +55,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 //        this.authenticationManager = authenticationManager;
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = authenticationRepository.findByName(username);
@@ -66,6 +64,10 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
         return new CustomUserDetails(user);
     }
+
+
+
+
     @Transactional
     @Override
     public boolean register(RegisterRequest registerRequest) {
@@ -233,15 +235,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         }
     }
 
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-////        user = authenticationRepository.findByName(username);
-////        if (user == null) {
-////            throw new UsernameNotFoundException(username);
-////        }
-//        return user;
-//    }
 
 
     @Override

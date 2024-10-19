@@ -38,5 +38,19 @@ public class AccountResponse {
         this.address = user.getAddress();
         this.DataActivate = user.getTimeCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
+    public AccountResponse(User user, String token) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.avatar = user.getAvata();
+        this.role = user.getRole();
+        this.phone = user.getPhone();
+        this.gender = user.getGender();
+        this.describe = user.getDescription();
+        this.address = user.getAddress();
+        this.DataActivate = user.getTimeCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        this.token = token;
+    }
+
 }
 

@@ -6,6 +6,7 @@ import com.experess.news.iservice.IAuthenticationService;
 import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api")
+@SecurityRequirement(name = "api")
 public class Authentication {
 
     private final IAuthenticationService authenticationService;
