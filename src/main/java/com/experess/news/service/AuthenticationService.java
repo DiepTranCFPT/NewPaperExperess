@@ -12,7 +12,6 @@ import com.experess.news.repository.AuthenticationRepository;
 
 import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IReportRepository;
-import com.experess.news.securityconfig.JwtTokenProvider;
 import com.experess.news.utils.OtherFunctions;
 import com.experess.news.utils.SendMailUtils;
 import com.experess.news.model.Request.*;
@@ -20,9 +19,6 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,7 +39,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     private final PasswordEncoder passwordEncoder;
     private String VerifyCode;
     private User user;
-    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthenticationService(AuthenticationRepository authenticationRepository,
@@ -51,16 +46,15 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                                  PasswordEncoder passwordEncoder,
                                  @Lazy IReportRepository reportRepository
 //                                 AuthenticationManager authenticationManager
-                                 , JwtTokenProvider tokenService
             , @Lazy IArticleRepository articleRepository) {
         this.authenticationRepository = authenticationRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.reportRepository = reportRepository;
         this.articleRepository = articleRepository;
-        this.jwtTokenProvider = tokenService;
 //        this.authenticationManager = authenticationManager;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -70,6 +64,10 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
         return new CustomUserDetails(user);
     }
+
+
+
+
     @Transactional
     @Override
     public boolean register(RegisterRequest registerRequest) {
@@ -121,7 +119,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         }
 //        Authentication authentication = authenticationManager.authenticate(
 //                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        return new AccountResponse(user,jwtTokenProvider.generateToken(new CustomUserDetails(user)));
+        return new AccountResponse(user);
     }
 
     @Override
@@ -237,15 +235,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         }
     }
 
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-////        user = authenticationRepository.findByName(username);
-////        if (user == null) {
-////            throw new UsernameNotFoundException(username);
-////        }
-//        return user;
-//    }
 
 
     @Override
