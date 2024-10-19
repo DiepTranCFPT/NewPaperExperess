@@ -5,6 +5,7 @@ import com.experess.news.model.Request.ArticleRequest;
 import com.experess.news.model.Response.articlereponse.ArticleResponseDetails;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IArticleService {
 
@@ -23,7 +24,7 @@ public interface IArticleService {
      */
     List<String> searchByKey (String typename);
 
-    Article findById(String id);
+    Optional<Article> findById(String id);
 
 
     /**

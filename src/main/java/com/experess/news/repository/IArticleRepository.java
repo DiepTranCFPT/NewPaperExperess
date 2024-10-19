@@ -2,15 +2,15 @@ package com.experess.news.repository;
 
 import com.experess.news.entity.Article;
 import com.experess.news.entity.Type;
+import com.experess.news.repository.base_repo.BaseRepository;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface IArticleRepository extends JpaRepository<Article, String> {
+public interface IArticleRepository extends BaseRepository<Article, String> {
     List<Article> findByType(Type type);
 
     List<Article> findByAuthor_NameContaining(@NotNull String author);

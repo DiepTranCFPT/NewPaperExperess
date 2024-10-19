@@ -44,5 +44,10 @@ public class ArticleResponseDetails {
         this.ratings = OtherFunctions.ratingMedium(article.getRatings());
         this.access = article.getAccess();
     }
+
+
+
+
+
 }
 

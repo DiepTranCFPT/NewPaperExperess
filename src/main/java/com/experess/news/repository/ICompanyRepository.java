@@ -1,7 +1,7 @@
 package com.experess.news.repository;
 
 import com.experess.news.entity.Company;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.experess.news.repository.base_repo.BaseRepository;
 
-public interface ICompanyRepository extends JpaRepository<Company,String> {
+public interface ICompanyRepository extends BaseRepository<Company,String> {
 }

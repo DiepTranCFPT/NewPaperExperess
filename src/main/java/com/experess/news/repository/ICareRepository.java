@@ -1,9 +1,9 @@
 package com.experess.news.repository;
 
 import com.experess.news.entity.Care;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.experess.news.repository.base_repo.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ICareRepository extends JpaRepository<Care,String> {
+public interface ICareRepository extends BaseRepository<Care,String> {
 }

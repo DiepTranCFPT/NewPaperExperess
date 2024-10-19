@@ -3,7 +3,7 @@ package com.experess.news.repository;
 import com.experess.news.entity.Follows;
 import com.experess.news.entity.User;
 import com.experess.news.model.Response.UserReponseFl;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.experess.news.repository.base_repo.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 
 @Repository
-public interface IFollowRepository extends JpaRepository<Follows, String> {
+public interface IFollowRepository extends BaseRepository<Follows, String> {
 
 
 //    List<User> findAllByFollower_Id(String followerId);

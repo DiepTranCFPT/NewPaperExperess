@@ -117,8 +117,9 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new AuthException("Invalid password");
         }
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+
+
         return new AccountResponse(user);
     }
 

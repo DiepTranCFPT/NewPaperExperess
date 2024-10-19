@@ -1,7 +1,7 @@
 package com.experess.news.repository;
 
 import com.experess.news.entity.Comment;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.experess.news.repository.base_repo.BaseRepository;
 
-public interface ICommentRepository extends JpaRepository<Comment,String> {
+public interface ICommentRepository extends BaseRepository<Comment,String> {
 }

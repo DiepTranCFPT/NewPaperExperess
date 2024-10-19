@@ -1,7 +1,7 @@
 package com.experess.news.repository;
 
 import com.experess.news.entity.Media;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.experess.news.repository.base_repo.BaseRepository;
 
-public interface IMediaRepository extends JpaRepository<Media, String> {
+public interface IMediaRepository extends BaseRepository<Media, String> {
 }

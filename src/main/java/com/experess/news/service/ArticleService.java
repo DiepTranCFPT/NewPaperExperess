@@ -10,21 +10,23 @@ import com.experess.news.repository.AuthenticationRepository;
 import com.experess.news.repository.ICareRepository;
 import com.experess.news.repository.IHistoryRepository;
 import com.experess.news.repository.IArticleRepository;
+import com.experess.news.repository.base_repo.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
-public class ArticleService implements IArticleService {
+public class ArticleService extends BaseService<Article,String> implements IArticleService{
 
-    private final IArticleRepository iArticleRepository;
     private final AuthenticationRepository authenticationRepository;
     private final ITypeService iTypeService;
     private final ICareRepository careRepository;
     private final IHistoryRepository historyRepository;
+    private final IArticleRepository iArticleRepository;
 
     @Autowired
     public ArticleService(IArticleRepository iArticleRepository
@@ -33,6 +35,7 @@ public class ArticleService implements IArticleService {
                           ICareRepository careRepository,
                           IHistoryRepository historyRepository
                           ) {
+        super(iArticleRepository);
         this.iArticleRepository = iArticleRepository;
         this.authenticationRepository = authenticationRepository;
         this.iTypeService = iTypeService;
@@ -44,12 +47,12 @@ public class ArticleService implements IArticleService {
     public void Access(Article article) {
         int count = setAccess(article.getAccess());
         article.setAccess(count);
-        iArticleRepository.save(article);
+        baseRepository.save(article);
     }
 
     @Override
     public ArticleResponseDetails readArticle(String id) {
-        Article article = iArticleRepository.findById(id)
+        Article article = baseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Could not find article"));
 
         if (article != null) {
@@ -77,14 +80,14 @@ public class ArticleService implements IArticleService {
                 .isPublished(false) // Optional, depends on your logic (e.g., if the article should start as unpublished)
                 .build();
 
-        return iArticleRepository.save(article);
+        return baseRepository.save(article);
     }
 
 
 
     @Override
     public Article editArticle(String id, ArticleRequest articleRequest) {
-        Article existingArticle = iArticleRepository.findById(id)
+        Article existingArticle = baseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Article not found"));
 
         // Update fields in the existing article
@@ -99,7 +102,7 @@ public class ArticleService implements IArticleService {
                 .isPublished(false)// Keep existing access count
                 .build();
 
-        return iArticleRepository.save(updatedArticle);
+        return baseRepository.save(updatedArticle);
     }
 
 
@@ -120,9 +123,8 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Article findById(String id) {
-        return iArticleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ID Not found"));
+    public Optional<Article> findById(String id) {
+        return baseRepository.findById(id);
     }
 
 }
