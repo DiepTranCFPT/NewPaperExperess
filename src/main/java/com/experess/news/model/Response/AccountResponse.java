@@ -4,14 +4,15 @@ import com.experess.news.entity.User;
 import com.experess.news.infor.Gender;
 import com.experess.news.infor.Role;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.format.DateTimeFormatter;
 
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountResponse {
 
     private String id;
@@ -39,16 +40,7 @@ public class AccountResponse {
         this.DataActivate = user.getTimeCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
     public AccountResponse(User user, String token) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.avatar = user.getAvata();
-        this.role = user.getRole();
-        this.phone = user.getPhone();
-        this.gender = user.getGender();
-        this.describe = user.getDescription();
-        this.address = user.getAddress();
-        this.DataActivate = user.getTimeCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        this(user);
         this.token = token;
     }
 

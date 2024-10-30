@@ -23,18 +23,14 @@ public class EndpointsConfig {
         return publicEndpoints;
     }
 
-    public static EndpointsConfig getEndpointsConfig() throws IOException {
-        try (InputStream inputStream = EndpointsConfig.class.getResourceAsStream("/EndpointsConfig.json")) {
-            if (inputStream == null) {
-                throw new IOException("Tệp EndpointsConfig.json không tìm thấy");
-            }
-            return new ObjectMapper().readValue(inputStream, EndpointsConfig.class);
-        }
-    }
-
     @PostConstruct
     public void init() throws IOException {
-        EndpointsConfig config = getEndpointsConfig();
-        this.publicEndpoints = config.getPublicEndpoints();
+        try (InputStream inputStream = getClass().getResourceAsStream("/EndpointsConfig.json")) {
+            if (inputStream == null) {
+                throw new IOException("Không tìm thấy tệp EndpointsConfig.json");
+            }
+            EndpointsConfig config = new ObjectMapper().readValue(inputStream, EndpointsConfig.class);
+            this.publicEndpoints = config.getPublicEndpoints();
+        }
     }
 }

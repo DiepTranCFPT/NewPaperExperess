@@ -12,6 +12,8 @@ import com.experess.news.repository.AuthenticationRepository;
 
 import com.experess.news.repository.IArticleRepository;
 import com.experess.news.repository.IReportRepository;
+import com.experess.news.repository.base_repo.BaseService;
+import com.experess.news.securityconfig.JwtService;
 import com.experess.news.utils.OtherFunctions;
 import com.experess.news.utils.SendMailUtils;
 import com.experess.news.model.Request.*;
@@ -28,9 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
-public class AuthenticationService implements IAuthenticationService, UserDetailsService {
+public class AuthenticationService extends BaseService<User,String> implements IAuthenticationService, UserDetailsService {
 
     private final AuthenticationRepository authenticationRepository;
     private final EmailService emailService;
@@ -47,6 +50,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                                  @Lazy IReportRepository reportRepository
 //                                 AuthenticationManager authenticationManager
             , @Lazy IArticleRepository articleRepository) {
+        super(authenticationRepository);
         this.authenticationRepository = authenticationRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
@@ -59,13 +63,11 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = authenticationRepository.findByName(username);
-        if(user == null)
+        if (user == null)
             throw new UsernameNotFoundException(username);
 
         return new CustomUserDetails(user);
     }
-
-
 
 
     @Transactional
@@ -114,13 +116,10 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         var user = authenticationRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AuthException("Account not found with email: " + loginRequest.getEmail()));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
             throw new AuthException("Invalid password");
-        }
 
-
-
-        return new AccountResponse(user);
+        return new AccountResponse(user,new JwtService().generateToken(user.getEmail()));
     }
 
     @Override
@@ -204,9 +203,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
 
 
     @Override
-    public User findById(String id) {
-        return authenticationRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Account not found with id: " + id));
+    public Optional<User> findById(String id) {
+        return authenticationRepository.findById(id);
     }
 
     @Override
@@ -235,7 +233,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
             throw new RuntimeException(e);
         }
     }
-
 
 
     @Override

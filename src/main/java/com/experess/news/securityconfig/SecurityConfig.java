@@ -1,7 +1,7 @@
 package com.experess.news.securityconfig;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
+
+import com.experess.news.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.io.IOException;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -32,59 +29,34 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final EndpointsConfig endpointsConfig;
 
-    private final String[] PUBLIC_ENDPOINT = {
-            "/login/**"
-    };
 
-    private final String[] PUBLIC_API = {
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/swagger-resources/**",
-    };
 
     @Autowired
-    public SecurityConfig(@Lazy UserDetailsService userDetailsService) {
+    public SecurityConfig(@Lazy UserDetailsService userDetailsService
+            ,JwtAuthFilter jwtAuthFilter,
+                          EndpointsConfig endpointsConfig) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.endpointsConfig = endpointsConfig;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        String[] PUBLIC_ENDPOINT = endpointsConfig.getPublicEndpoints().toArray(new String[0]);
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(new RequestMatcher() {
-                            @Override
-                            public boolean matches(HttpServletRequest request) {
-                                String method = request.getMethod();
-                                String path = request.getRequestURI();
-                                return "GET".equalsIgnoreCase(method) && Arrays.stream(PUBLIC_API).anyMatch(path::startsWith);
-                            }
-                        }).permitAll()
+                       //.requestMatchers("api/register","api/verify/").permitAll()
+                        .requestMatchers(PUBLIC_ENDPOINT).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(new Filter() {
-                    @Override
-                    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-                            throws IOException, ServletException {
-                        HttpServletRequest httpRequest = (HttpServletRequest) request;
-                        String requestURI = httpRequest.getRequestURI();
-                        String method = httpRequest.getMethod();
-
-                        boolean isPublicEndpoint = Arrays.stream(PUBLIC_ENDPOINT).anyMatch(requestURI::startsWith);
-                        boolean isPublicEndpointMethod = Arrays.stream(PUBLIC_API).anyMatch(requestURI::startsWith) && "GET".equalsIgnoreCase(method);
-
-                        if (!isPublicEndpoint && !isPublicEndpointMethod) {
-                            chain.doFilter(request, response);
-                        } else {
-                            response.setContentType("text/plain");
-                            response.getWriter().write("Access to this endpoint is public.");
-                        }
-                    }
-                }, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -106,4 +78,6 @@ public class SecurityConfig {
             throws Exception {
         return config.getAuthenticationManager();
     }
+
+
 }

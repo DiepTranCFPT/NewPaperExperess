@@ -5,6 +5,8 @@ import com.experess.news.entity.User;
 import com.experess.news.model.Request.*;
 import com.experess.news.model.Response.AccountResponse;
 
+import java.util.Optional;
+
 
 public interface IAuthenticationService {
     default boolean register(RegisterRequest registerRequest) {
@@ -16,7 +18,7 @@ public interface IAuthenticationService {
     }
 
     default AccountResponse login(LoginRequest loginRequest) {
-        return null;
+        return new AccountResponse(new User());
     }
 
     default AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
@@ -31,7 +33,7 @@ public interface IAuthenticationService {
         return false;
     }
 
-    User findById(String id);
+    Optional<User> findById(String id);
 
     default User registerforGoogle(RegisterforGoogle GoogleAccount) {
         return null;

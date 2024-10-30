@@ -25,6 +25,14 @@ public class Authentication {
 
     private final IAuthenticationService authenticationService;
 
+
+
+    @PostMapping("/login")
+    public ResponseEntity<AccountResponse> login(@RequestBody LoginRequest loginRequest) {
+        AccountResponse account = authenticationService.login(loginRequest);
+        return ResponseEntity.ok(account);
+    }
+
     @Autowired
     public Authentication(IAuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -44,11 +52,7 @@ public class Authentication {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<AccountResponse> login(@RequestBody LoginRequest loginRequest) {
-        AccountResponse account = authenticationService.login(loginRequest);
-        return ResponseEntity.ok(account);
-    }
+
 
     @PostMapping("/login-google")
     public ResponseEntity<AccountResponse> loginGg(@RequestBody LoginGoogleRequest loginGoogleRequest) {
@@ -78,7 +82,7 @@ public class Authentication {
     }
 
     @GetMapping("/account/{id}")
-    public ResponseEntity<User> getAccountById(@NotNull @Valid @PathVariable(value = "id") String id) {
+    public ResponseEntity<?> getAccountById(@NotNull @Valid @PathVariable(value = "id") String id) {
         return ResponseEntity.ok(authenticationService.findById(id));
     }
 

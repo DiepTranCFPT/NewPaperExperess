@@ -35,10 +35,6 @@ public class NewExperessApplication {
         try {
             if (System.getProperty("os.name").toLowerCase().contains("win"))
                 new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url).start();
-
-//            else if (System.getProperty("os.name").toLowerCase().contains("mac"))
-//                new ProcessBuilder("open", url).start();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
